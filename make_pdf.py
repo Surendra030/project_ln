@@ -28,7 +28,7 @@ def download_images(images, paper_name):
     return image_paths
 
 # Function to create PDF from images
-def create_pdf(image_paths,title):
+def create_pdf(image_paths,title,index):
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=5)
     
@@ -37,7 +37,7 @@ def create_pdf(image_paths,title):
         pdf.image(image_path, x=10, y=10, w=180)  # Adjust the image size as needed
     
     # Save the PDF locally temporarily
-    pdf_output_path = f"{title}.pdf"
+    pdf_output_path = f"{index}_{title}.pdf"
     pdf.output(pdf_output_path)
     
     return pdf_output_path
@@ -54,7 +54,7 @@ def upload_to_mega(pdf_path, email, password):
     print("uploading completed..")
 
 
-def main_pdf(data,title):
+def main_pdf(data,title,index):
     
     paper_list = []
 
@@ -75,7 +75,7 @@ def main_pdf(data,title):
             image_paths.extend(download_images(images, paper_name))
 
     # Create the PDF
-    pdf_path = create_pdf(image_paths,title)
+    pdf_path = create_pdf(image_paths,title,index)
 
     # Upload the PDF to Mega Cloud
     email = "afg154006@gmail.com"  # Replace with your Mega email

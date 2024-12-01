@@ -7,9 +7,9 @@ import re
 url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 
 data = main(url)
-
+data = [i for i in data  if "jobless" in i['title'].lower()]
 constructed_urls = []
-
+data= data[:21]
 
 def sanitize_title(title):
     
@@ -19,7 +19,7 @@ def sanitize_title(title):
     sanitized = re.sub(r'\s+', '_', sanitized)
     return sanitized
 
-for entity_obj in data:
+for index,entity_obj in enumerate(data):
     # Extract the last two segments from the href
     parts = entity_obj['href'].split('/')
     if len(parts) > 3:
@@ -29,10 +29,10 @@ for entity_obj in data:
         new_url = f"https://online.anyflip.com/{base_code}/{sub_code}/mobile/index.html"
         entity_obj['href'] = new_url
 
-for obj in data:
+for index,obj in enumerate(data):
     img_url_data = get_images_urls(obj['href'])
     #saving pdf file to cloud
     title = sanitize_title(obj['title'])
-    main_pdf(img_url_data,title)
+    main_pdf(img_url_data,title,index)
 
     
