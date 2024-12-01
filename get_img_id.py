@@ -77,11 +77,12 @@ def get_images_urls(url):
                 right_arrow.click()
                 time.sleep(3)  # Wait for the page to load after the click
         print("Image URLs extracted from url")
-
+        driver.quit()
         return output_data
 
         
 
     finally:
+        if driver:
         # Quit the driver
-        driver.quit()
+            driver.quit()
