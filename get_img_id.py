@@ -83,6 +83,4 @@ def get_images_urls(url):
         
 
     finally:
-        if driver is None:
-        # Quit the driver
-            driver.quit()
+        print("all data extraction completed..")

@@ -34,6 +34,5 @@ for obj in data:
     #saving pdf file to cloud
     title = sanitize_title(obj['title'])
     main_pdf(img_url_data,title)
-    time.sleep(5)
 
     

@@ -2,20 +2,29 @@ import requests
 from PIL import Image
 from io import BytesIO
 from fpdf import FPDF
-import json
 from mega import Mega
 import os
+import shutil
 
-# Function to download and save images
 def download_images(images, paper_name):
+    # Ensure the "images" folder exists
+    os.makedirs("images", exist_ok=True)
+    
     image_paths = []
     for index, image in enumerate(images):
         img_url = image["src"]
+        
+        # Fetch the image from the URL
         response = requests.get(img_url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        
+        # Open and save the image
         img = Image.open(BytesIO(response.content))
-        img_path = f"{paper_name}_page{index + 1}.jpg"
+        img_path = os.path.join("images", f"{paper_name}_page{index + 1}.jpg")
         img.save(img_path)
+        
         image_paths.append(img_path)
+    
     return image_paths
 
 # Function to create PDF from images
@@ -75,3 +84,4 @@ def main_pdf(data,title):
 
     # Optional: Remove the locally saved PDF file after uploading
     os.remove(pdf_path)
+    shutil.rmtree("images")
