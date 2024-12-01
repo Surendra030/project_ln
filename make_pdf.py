@@ -42,6 +42,7 @@ def upload_to_mega(pdf_path, email, password):
     print("Uploading to Mega cloud...")
     # Upload the PDF file to Mega
     m.upload(pdf_path)
+    print("uploading completed..")
 
 
 def main_pdf(data,title):
