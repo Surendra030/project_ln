@@ -10,7 +10,9 @@ import time
 options = Options()
 options.add_argument("--disable-gpu")
 options.add_argument("--window-size=1920x1080")
-options.add_argument("--headless")  # Uncomment for headless mode
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
+
 
 # Specify the path to your chromedriver
 chromedriver_path = r"chromedriver"
