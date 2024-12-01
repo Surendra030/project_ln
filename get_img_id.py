@@ -83,6 +83,6 @@ def get_images_urls(url):
         
 
     finally:
-        if driver:
+        if driver is None:
         # Quit the driver
             driver.quit()
