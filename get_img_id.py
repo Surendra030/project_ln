@@ -1,9 +1,7 @@
-import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-import json
 import time
 
 # Set up Chrome options
@@ -16,8 +14,6 @@ options.add_argument("--no-sandbox")
 
 # Specify the path to your chromedriver
 chromedriver_path = r"chromedriver"
-service = Service(executable_path=chromedriver_path)
-driver = webdriver.Chrome(service=service, options=options)
 
 # Output data
 output_data = []
@@ -28,6 +24,9 @@ unique_image_urls = set()
 def get_images_urls(url):
     # Try to open the main URL
     try:
+        service = Service(executable_path=chromedriver_path)
+        driver = webdriver.Chrome(service=service, options=options)
+
         driver.get(url)
         print("Loading for 5 seconds...")
         time.sleep(5)  # Allow time for the page to load
