@@ -1,47 +1,36 @@
-name: Upload PDF to Mega Cloud
+name: Download Tesseract and Push to Repo
 
 on:
   push:
     branches:
-      - main  # Trigger the workflow when code is pushed to the main branch
-  workflow_dispatch:  # Allow the workflow to be triggered manually
+      - main
+  workflow_dispatch:  # This allows manual trigger of the workflow
 
 jobs:
-  upload-to-mega:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
-    
+  download_tesseract:
+    runs-on: ubuntu-latest  # Runs the job on Ubuntu
+
     steps:
-      # Step 1: Check out the repository
-      - name: Checkout repository
+      - name: Checkout the repository
         uses: actions/checkout@v2
 
-      # Step 2: Set up Python environment
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'  # Use Python 3.10 for compatibility
-
-      # Step 3: Install dependencies
-      - name: Install dependencies
+      - name: Install Tesseract
         run: |
-          python -m pip install --upgrade pip
-          pip install requests Pillow fpdf mega.py selenium pytesseract
+          sudo apt update
+          sudo apt install -y tesseract-ocr
 
-      # Step 4: Install Tesseract OCR
-      - name: Install Tesseract OCR
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y tesseract-ocr
-          sudo apt-get install -y libleptonica-dev
+      - name: Verify Tesseract installation
+        run: tesseract --version
 
-      # Step 5: Verify Tesseract Installation
-      - name: Verify Tesseract Installation
+      - name: Commit and push changes
         run: |
-          tesseract --version  # Check if Tesseract is installed correctly
-
-      # Step 6: Run the Python script
-      - name: Run upload script
-        env:
-          M_TOKEN: ${{ secrets.M_TOKEN }}
-        run: |
-          python main_file.py  # Replace with the actual Python script name
+          # Configure Git
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # Add all changes and commit
+          git add -A
+          git commit -m "Added Tesseract to the repository"
+          
+          # Push changes to the repository
+          git push origin main
