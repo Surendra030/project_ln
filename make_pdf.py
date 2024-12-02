@@ -5,7 +5,9 @@ from fpdf import FPDF
 from mega import Mega
 import os
 import shutil
+import pytesseract
 
+# Function to download images and return their paths
 def download_images(images, paper_name):
     # Ensure the "images" folder exists
     os.makedirs("images", exist_ok=True)
@@ -27,17 +29,25 @@ def download_images(images, paper_name):
     
     return image_paths
 
-# Function to create PDF from images
-def create_pdf(image_paths,title,index):
+# Function to create PDF from images with OCR text
+def create_pdf_with_ocr(image_paths, title, index):
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=5)
     
     for image_path in image_paths:
+        # Apply OCR to the image and extract the text
+        img = Image.open(image_path)
+        ocr_text = pytesseract.image_to_string(img)
+
+        # Add OCR text to the PDF
         pdf.add_page()
         pdf.image(image_path, x=10, y=10, w=180)  # Adjust the image size as needed
+        pdf.set_xy(10, 150)  # Set text position after the image (adjust as needed)
+        pdf.set_font("Arial", size=12)
+        pdf.multi_cell(0, 10, ocr_text)  # Add the OCR text to the PDF
     
     # Save the PDF locally temporarily
-    pdf_output_path = f"{index}_{title}.pdf"
+    pdf_output_path = f"{index}_{title}_ocr.pdf"
     pdf.output(pdf_output_path)
     
     return pdf_output_path
@@ -46,21 +56,20 @@ def create_pdf(image_paths,title,index):
 def upload_to_mega(pdf_path, email, password):
     # Log in to Mega
     mega = Mega()
-    print("new connection establing")
+    print("new connection establishing")
     m = mega.login(email, password)
     print("Uploading to Mega cloud...")
     # Upload the PDF file to Mega
     m.upload(pdf_path)
     print("uploading completed..")
 
-
-def main_pdf(data,title,index):
-    
+def main_pdf(data, title, index):
     paper_list = []
 
     for list_item_obj in data:
         for key in list_item_obj:
             paper_list.append(key)
+
     # Download images from all papers
     image_paths = []
 
@@ -74,14 +83,15 @@ def main_pdf(data,title,index):
         if images:  # Proceed only if there are images
             image_paths.extend(download_images(images, paper_name))
 
-    # Create the PDF
-    pdf_path = create_pdf(image_paths,title,index)
+    # Create the OCR PDF
+    pdf_path = create_pdf_with_ocr(image_paths, title, index)
 
     # Upload the PDF to Mega Cloud
-    email = "afg154006@gmail.com"  # Replace with your Mega email
+    email = "afg154007@gmail.com"  # Replace with your Mega email 
     password = "megaMac02335!"  # Replace with your Mega password
     upload_to_mega(pdf_path, email, password)
 
     # Optional: Remove the locally saved PDF file after uploading
     os.remove(pdf_path)
     shutil.rmtree("images")
+
