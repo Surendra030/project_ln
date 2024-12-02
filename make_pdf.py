@@ -6,6 +6,7 @@ from mega import Mega
 import os
 import shutil
 import pytesseract
+import unicodedata
 
 # Function to download images and return their paths
 def download_images(images, paper_name):
@@ -29,6 +30,11 @@ def download_images(images, paper_name):
     
     return image_paths
 
+# Function to remove or replace unsupported characters in text
+def sanitize_text(text):
+    # Normalize the text to remove non-ASCII characters or replace them
+    return ''.join(c if unicodedata.category(c) in ('Lu', 'Ll', 'Nd', 'Pc', 'Zs') else ' ' for c in text)
+
 # Function to create PDF from images with OCR text
 def create_pdf_with_ocr(image_paths, title, index):
     pdf = FPDF()
@@ -39,12 +45,15 @@ def create_pdf_with_ocr(image_paths, title, index):
         img = Image.open(image_path)
         ocr_text = pytesseract.image_to_string(img)
 
+        # Sanitize the OCR text to remove unsupported characters
+        sanitized_text = sanitize_text(ocr_text)
+
         # Add OCR text to the PDF
         pdf.add_page()
         pdf.image(image_path, x=10, y=10, w=180)  # Adjust the image size as needed
         pdf.set_xy(10, 150)  # Set text position after the image (adjust as needed)
         pdf.set_font("Arial", size=12)
-        pdf.multi_cell(0, 10, ocr_text)  # Add the OCR text to the PDF
+        pdf.multi_cell(0, 10, sanitized_text)  # Add the sanitized OCR text to the PDF
     
     # Save the PDF locally temporarily
     pdf_output_path = f"{index}_{title}_ocr.pdf"
@@ -87,7 +96,7 @@ def main_pdf(data, title, index):
     pdf_path = create_pdf_with_ocr(image_paths, title, index)
 
     # Upload the PDF to Mega Cloud
-    email = "afg154007@gmail.com"  # Replace with your Mega email 
+    email = "afg154007@gmail.com"  # Replace with your Mega email  
     password = "megaMac02335!"  # Replace with your Mega password
     upload_to_mega(pdf_path, email, password)
 
