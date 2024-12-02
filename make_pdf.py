@@ -94,4 +94,3 @@ def main_pdf(data, title, index):
     # Optional: Remove the locally saved PDF file after uploading
     os.remove(pdf_path)
     shutil.rmtree("images")
-
