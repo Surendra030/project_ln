@@ -12,38 +12,41 @@ import unicodedata
 def sanitize_text(text):
     return ''.join(c if unicodedata.category(c) in ('Lu', 'Ll', 'Nd', 'Pc', 'Zs') else ' ' for c in text)
 
-# Function to download images and perform OCR for each
+# Function to download images, perform OCR, and create pages in the PDF
 def process_images(images, paper_name, pdf):
+    """Process images to extract text (OCR) or add pure images to the PDF."""
     os.makedirs("images", exist_ok=True)  # Ensure the "images" folder exists
 
     for index, image in enumerate(images):
         img_url = image["src"]
-        
+
         # Fetch the image from the URL
         response = requests.get(img_url)
         response.raise_for_status()
-        
-        # Open the image
+
+        # Open and save the image locally
         img = Image.open(BytesIO(response.content))
-        
-        # Save the image locally
         img_path = os.path.join("images", f"{paper_name}_page{index + 1}.jpg")
         img.save(img_path)
-        
+
         # Perform OCR on the image
         ocr_text = pytesseract.image_to_string(img)
-        sanitized_text = sanitize_text(ocr_text)
-        
-        # Add a new page to the PDF for this image and its OCR text
-        pdf.add_page()
-        pdf.image(img_path, x=10, y=10, w=180)  # Adjust image size
-        pdf.set_xy(10, 150)  # Set text position
-        pdf.set_font("Arial", size=12)
-        pdf.multi_cell(0, 10, sanitized_text)  # Add sanitized text
+        sanitized_text = sanitize_text(ocr_text.strip())
+
+        if sanitized_text:  # If OCR detects text
+            # Add a new page for the extracted text
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+            pdf.set_xy(10, 10)
+            pdf.multi_cell(0, 10, sanitized_text)  # Write OCR text on the page
+        else:
+            # Add a new page for the pure image
+            pdf.add_page()
+            pdf.image(img_path, x=10, y=10, w=180)  # Adjust image size
 
     return pdf
-
 # Function to upload the PDF to Mega
+
 def upload_to_mega(pdf_path, email, password):
     mega = Mega()
     print("Establishing connection to Mega...")
