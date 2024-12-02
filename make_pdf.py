@@ -8,9 +8,17 @@ import shutil
 import pytesseract
 import unicodedata
 
+
 # Function to remove or replace unsupported characters in text
 def sanitize_text(text):
-    return ''.join(c if unicodedata.category(c) in ('Lu', 'Ll', 'Nd', 'Pc', 'Zs') else ' ' for c in text)
+    """Sanitize text by removing unsupported characters and preserving basic formatting."""
+    sanitized_lines = []
+    for line in text.splitlines():
+        sanitized_line = ''.join(c if unicodedata.category(c) in ('Lu', 'Ll', 'Nd', 'Pc', 'Zs', 'Zp') else ' ' for c in line)
+        if sanitized_line.strip():
+            sanitized_lines.append(sanitized_line.strip())
+    return '\n'.join(sanitized_lines)
+
 
 # Function to download images, perform OCR, and create pages in the PDF
 def process_images(images, paper_name, pdf):
@@ -38,16 +46,18 @@ def process_images(images, paper_name, pdf):
             pdf.add_page()
             pdf.set_font("Arial", size=12)
             pdf.set_xy(10, 10)
-            pdf.multi_cell(0, 10, sanitized_text)  # Write OCR text on the page
+            pdf.multi_cell(0, 10, sanitized_text)  # Write OCR text on the page with newlines preserved
         else:
             # Add a new page for the pure image
             pdf.add_page()
             pdf.image(img_path, x=10, y=10, w=180)  # Adjust image size
 
     return pdf
-# Function to upload the PDF to Mega
 
+
+# Function to upload the PDF to Mega
 def upload_to_mega(pdf_path, email, password):
+    """Upload the PDF file to Mega Cloud."""
     mega = Mega()
     print("Establishing connection to Mega...")
     m = mega.login(email, password)
@@ -55,7 +65,10 @@ def upload_to_mega(pdf_path, email, password):
     m.upload(pdf_path)
     print("Upload completed.")
 
+
+# Main function to generate the PDF
 def main_pdf(data, title, index):
+    """Generate a PDF with OCR text and pure images."""
     paper_list = []
     for list_item_obj in data:
         for key in list_item_obj:
@@ -74,15 +87,11 @@ def main_pdf(data, title, index):
     pdf_output_path = f"{index}_{title}_ocr.pdf"
     pdf.output(pdf_output_path)
 
-    # # Upload the PDF to Mega Cloud
-    # key = os.getenv("M_TOKEN").split("_")
-    # email = key[0]
-    # password = key[1]
+    # Upload the PDF to Mega Cloud
     email = "afg154007@gmail.com"
-    password= "megaMac02335!"
+    password = "megaMac02335!"
     upload_to_mega(pdf_output_path, email, password)
 
     # Cleanup
     os.remove(pdf_output_path)
     shutil.rmtree("images")
-
