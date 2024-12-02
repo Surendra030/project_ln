@@ -24,15 +24,23 @@ jobs:
           tesseract --version
           tesseract --version > tesseract_version.txt  # Save Tesseract version to a file
 
+      - name: Create Tesseract-related files folder
+        run: |
+          mkdir tesseract_files
+          # Copy Tesseract files (this is just an example)
+          cp $(which tesseract) tesseract_files/tesseract_executable
+          cp /usr/share/tesseract-ocr/tessdata/* tesseract_files/tessdata/
+          # You can copy any other relevant files, adjust the paths as needed
+
       - name: Commit and push changes
         run: |
           # Configure Git
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
-          # Add the new tesseract_version.txt file and commit
-          git add tesseract_version.txt
-          git commit -m "Added Tesseract version log file"
+          # Add the new tesseract files and commit
+          git add tesseract_version.txt tesseract_files/
+          git commit -m "Added Tesseract installation files and version log"
           
           # Push changes using GITHUB_TOKEN
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
