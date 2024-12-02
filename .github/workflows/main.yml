@@ -1,7 +1,6 @@
 name: Download and Save Tesseract
 
-on:
-  workflow_dispatch:  # This triggers the workflow manually
+on: [push]
 
 jobs:
   download-tesseract:
