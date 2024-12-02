@@ -40,31 +40,32 @@ def get_images_urls(url):
 
         # Loop through pages (limit to 5 pages for example)
         for page in range(target_pages):
-
+            page_mask_num = page_index_element.get_attribute("value").split("/")[0].split("-")  # e.g., "1/100"
             # Create a list for the current paper
             paper_data = []
 
             # Find all image elements on the page
-            image_elements = driver.find_elements(By.CSS_SELECTOR, "div.side-image img")
             
-            for img in image_elements:
-                img_src = img.get_attribute("src")
-                img_alt = img.get_attribute("alt")
-                img_id = img.get_attribute("id")
+            for i in page_mask_num:
+                num = int(i)
+                    # Extract image URLs from both page masks
+                img1_element = driver.find_element(By.CSS_SELECTOR, f"#pageMask{num} img")
 
-                # Skip the image if it is already in the set of unique URLs
-                if img_src in unique_image_urls:
-                    continue  # Don't add the image if it was already added to another paper
+                    # Get the src (image URL) attribute for both images
+                img1_src = img1_element.get_attribute("src")
+                img1_alt = img1_element.get_attribute("alt")
+                img1_id = img1_element.get_attribute('id')
 
-                # Add the image URL to the set of unique URLs
-                unique_image_urls.add(img_src)
-
-                # Prepare the image data for this paper
-                img_data = {
-                    "src": img_src,
-                    "alt": img_alt,
-                    "id": img_id
-                }
+                if img1_src:
+                        # Prepare the image data for this paper
+                    img_data = {
+                            "src": img1_src,
+                            "alt": img1_alt,
+                            "id": img1_id
+                        }
+                    
+            
+                
 
                 # Append image data to the paper
                 paper_data.append(img_data)

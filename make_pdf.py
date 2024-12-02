@@ -88,7 +88,7 @@ def main_pdf(data, title, index):
     pdf.output(pdf_output_path)
 
     # Upload the PDF to Mega Cloud
-    email = "afg154007@gmail.com"
+    email = "afg154006@gmail.com"
     password = "megaMac02335!"
     upload_to_mega(pdf_output_path, email, password)
 
