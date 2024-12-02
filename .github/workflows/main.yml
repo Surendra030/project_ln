@@ -1,14 +1,10 @@
 name: Upload PDF to Mega Cloud
 
-<<<<<<< HEAD
 on:
   push:
     branches:
       - main  # Trigger the workflow when code is pushed to the main branch
   workflow_dispatch:  # Allow the workflow to be triggered manually
-=======
-on: [push]
->>>>>>> 88e1e22b42f29bde0d14b785d69da310f39dd88e
 
 jobs:
   upload-to-mega:
