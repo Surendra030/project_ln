@@ -71,10 +71,12 @@ def main_pdf(data, title, index):
     pdf_output_path = f"{index}_{title}_ocr.pdf"
     pdf.output(pdf_output_path)
 
-    # Upload the PDF to Mega Cloud
-    key = os.getenv("M_TOKEN").split("_")
-    email = key[0]
-    password = key[1]
+    # # Upload the PDF to Mega Cloud
+    # key = os.getenv("M_TOKEN").split("_")
+    # email = key[0]
+    # password = key[1]
+    email = "afg154007@gmail.com"
+    password= "megaMac02335!"
     upload_to_mega(pdf_output_path, email, password)
 
     # Cleanup
