@@ -31,7 +31,6 @@ def download_img(img_src,title,length,c):
             # Open and save the image
         img = Image.open(BytesIO(img_data))
         img.save(img_path)
-        print(f"Image saved: {img_path}")
         c += 1
         return c
         
