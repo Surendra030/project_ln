@@ -20,7 +20,7 @@ def download_images(images, paper_name):
         
         # Open and save the image
         img = Image.open(BytesIO(response.content))
-        img_path = os.path.join("images", f"{paper_name}_page{index + 1}.jpg")
+        img_path = os.path.join("images", f"{index + 1}.jpg")
         img.save(img_path)
         
         image_paths.append(img_path)
@@ -87,11 +87,9 @@ def main_pdf(data,title,index):
     # Download images from all papers
     image_paths = []
 
-    # Download images for paper1 in the original order
-    image_paths.extend(download_images(data[0].get("paper1", []), "paper1"))
-
+    
     # Download images for paper2 onwards in their original order
-    for i in range(1, len(data)):
+    for i in range(0, len(data)):
         paper_name = paper_list[i]
         images = data[i].get(paper_name, [])  # Use .get() to avoid KeyError
         if images:  # Proceed only if there are images
