@@ -21,6 +21,7 @@ def download_img(img_src,title,length,c):
     try:
         # Check the size of the image in bytes
         img_data = res.content
+        print(len(img_data))
         if len(img_data) > 80 * 1024:  # Image is larger than 50 KB
             # Compress image if it's too large
             img = Image.open(BytesIO(img_data))
