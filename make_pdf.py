@@ -36,11 +36,19 @@ def process_images(images, paper_name, pdf, output_folder):
             # Open and save the image locally
             img = Image.open(BytesIO(response.content))
             img_path = os.path.join(images_folder, f"{paper_name}_page{index + 1}.jpg")
-            img.save(img_path)
 
-            # Add a new page for the image in the PDF
-            pdf.add_page()
-            pdf.image(img_path, x=10, y=10, w=180)  # Adjust image size
+            # Ensure the image is in JPG format
+            img = img.convert("RGB")
+            img.save(img_path, "JPEG")  # Save as JPEG to ensure FPDF compatibility
+
+            # Check if the image file exists before adding it to the PDF
+            if os.path.exists(img_path):
+                # Add a new page for the image in the PDF
+                pdf.add_page()
+                pdf.image(img_path, x=10, y=10, w=180)  # Adjust image size
+            else:
+                print(f"Failed to save image: {img_path}")
+
         except Exception as e:
             print(f"Failed to process image at {img_url}: {e}")
             continue  # Skip to the next image in case of an error
@@ -108,7 +116,7 @@ def main_pdf(data, title, index):
     pdf.output(pdf_output_path)
 
     # Upload the entire folder to Mega Cloud
-    email = "afg154010@gmail.com" 
+    email = "afg154006@gmail.com" 
     password = "megaMac02335!"
     upload_to_mega(output_folder, title, email, password)
 
