@@ -8,6 +8,8 @@ from mega import Mega
 import shutil
 from io import BytesIO
 import re
+
+
 def download_img(img_src,title,length,c):
     folder_name = "images"
     
@@ -22,35 +24,18 @@ def download_img(img_src,title,length,c):
         res.raise_for_status()
         img_data = res.content
 
-        # Open the image
+            # Calculate the size in MB
+        img_size_mb = len(img_data) / (1024 * 1024)
+        print(f"Image size: {img_size_mb:.2f} MB")
+
+            # Open and save the image
         img = Image.open(BytesIO(img_data))
-
-        # Compress the image to below 50 KB
-        quality = 95  # Start with a high quality
-        buffer = BytesIO()
-
-        while True:
-            # Save the image with the current quality
-            img.save(buffer, format="JPEG", quality=quality)
-            img_size = buffer.tell()  # Get the size of the buffer in bytes
-
-            if img_size <= 50 * 1024 or quality <= 10:  # Stop if size <= 50 KB or quality is too low
-                break
-
-            quality -= 5  # Reduce quality in steps of 5
-            buffer.seek(0)  # Reset buffer for next iteration
-            buffer.truncate()
-
-        if img_size > 50 * 1024:
-            print(f"Could not compress {img_src} to below 50 KB. Final size: {img_size} bytes")
-        else:
-            # Save the compressed image to the desired path
-            with open(img_path, "wb") as f:
-                f.write(buffer.getvalue())
-            print(f"Compressed and saved image: {img_path} (size: {img_size} bytes)")
-            c += 1
-
+        img.save(img_path)
+        print(f"Image saved: {img_path}")
+        c += 1
         return c
+        
+            
     except requests.exceptions.RequestException as e:
         print("error : ",e)
 
@@ -70,7 +55,7 @@ def images_to_pdf(images_folder, output_pdf):
         return int(match.group(1)) if match else float('inf')  # Sort invalid files last
 
     image_files.sort(key=lambda x: extract_c_value(os.path.basename(x)))
-
+    print(image_files)
     # Create a PDF file
     c = canvas.Canvas(output_pdf, pagesize=letter)
     
