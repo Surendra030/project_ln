@@ -6,9 +6,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from mega import Mega
 import shutil
-from dotenv import load_dotenv
 import io
-load_dotenv()
 
 
 
