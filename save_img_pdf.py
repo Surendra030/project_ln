@@ -105,7 +105,8 @@ def main_pdf(data,title):
         for key_lst in entry:
             for item_obj in entry[key_lst]:
                 img_src = item_obj["src"]
-                img_title = f"{c}_{item_obj["id"]}_{item_obj["alt"]}.jpg"
+                img_title = f"{c}_{item_obj['id']}_{item_obj['alt']}.jpg"
+
                 c = download_img(img_src,img_title,len(data),c)
 
     # Example usage
