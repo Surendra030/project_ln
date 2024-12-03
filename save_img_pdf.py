@@ -24,7 +24,6 @@ def download_img(img_src,title,length,c):
         with open(img_path,'wb')as f:
             for chunk in res.iter_content(1024):
                 f.write(chunk)
-        print(f"{c} / {length}")
         c +=1
 
         return c
@@ -75,10 +74,12 @@ def images_to_pdf(images_folder, output_pdf):
     c.save()
     print(f"PDF created successfully: {output_pdf}")
 
-def upload_to_mega(output_pdf,title):
+def upload_to_mega(output_pdf,title,images_folder):
     mega = Mega()
     key = os.getenv("M_TOKEN")
-    [email,password] = key.split("_")
+    key = key.split("_")
+    email = key[0]
+    password = key[1]
     
     m = mega.login(email,password)
     folder = m.create_folder(title)
@@ -91,6 +92,10 @@ def upload_to_mega(output_pdf,title):
         print("pdf uploded..")
         m.upload(f"{zip_file}.zip",folder_handle)
         print("zip file uploded..")
+        os.remove(output_pdf)
+        os.remove(f"{zip_file}.zip")
+        shutil.rmtree(images_folder)
+
     except Exception as e:
         print(e)
     
@@ -112,5 +117,5 @@ def main_pdf(data,title):
     output_pdf = f"{title}.pdf"  # Output PDF path
 
     images_to_pdf(images_folder, output_pdf)
-    upload_to_mega(output_pdf,title)
+    upload_to_mega(output_pdf,title,images_folder)
 
