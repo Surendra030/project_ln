@@ -49,15 +49,17 @@ def upload_to_mega(pdf_path, email, password, title):
     m = mega.login(email, password)
     
     # Ensure the "images" folder exists before zipping it
-    if not os.path.exists("images"):
-        print("Error: The 'images' folder does not exist.")
+    images_folder = "images"
+    if not os.path.exists(images_folder):
+        print(f"Error: The '{images_folder}' folder does not exist.")
         return
 
     # Create the zip file only if images are present
     output_zip = f"{title}.zip"
     try:
+        # Use absolute path to ensure we're zipping the correct folder
         print(f"Creating zip archive for images: {output_zip}")
-        shutil.make_archive(output_zip, "zip", "images")
+        shutil.make_archive(output_zip.replace('.zip', ''), 'zip', images_folder)  # Absolute path fix
     except Exception as e:
         print(f"Error creating zip archive: {e}")
         return
