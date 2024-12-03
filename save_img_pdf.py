@@ -15,23 +15,16 @@ def download_img(img_src,title,length,c):
 
     img_path = os.path.join(folder_name,title)
 
-    res = requests.get(img_src,stream=True)
-    res.raise_for_status()
+    
 
     try:
+        res = requests.get(img_src)
+        res.raise_for_status()
         # Check the size of the image in bytes
         img_data = res.content
         print(len(img_data))
-        if len(img_data) > 80 * 1024:  # Image is larger than 50 KB
-            # Compress image if it's too large
-            img = Image.open(BytesIO(img_data))
-            img = img.convert("RGB")  # Convert to RGB to ensure compatibility for saving
-            # Compress the image and save it at 80% quality (adjust as needed)
-            img.save(img_path, "JPEG", quality=80)
-        else:
-            # Save the image directly if it's under 50 KB
-            with open(img_path, 'wb') as f:
-                f.write(img_data)
+        img = Image.open(BytesIO(res.content))
+        img.save(img_path)
         c +=1
 
         return c
