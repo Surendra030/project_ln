@@ -26,7 +26,6 @@ def download_img(img_src,title,length,c):
 
             # Calculate the size in MB
         img_size_mb = len(img_data) / (1024 * 1024)
-        print(f"Image size: {img_size_mb:.2f} MB")
 
             # Open and save the image
         img = Image.open(BytesIO(img_data))
@@ -54,7 +53,6 @@ def images_to_pdf(images_folder, output_pdf):
         return int(match.group(1)) if match else float('inf')  # Sort invalid files last
 
     image_files.sort(key=lambda x: extract_c_value(os.path.basename(x)))
-    print(image_files)
     # Create a PDF file
     c = canvas.Canvas(output_pdf, pagesize=letter)
     
