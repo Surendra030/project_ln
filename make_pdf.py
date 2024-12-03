@@ -21,7 +21,7 @@ def sanitize_text(text):
 
 
 def process_images(images, paper_name, pdf, output_folder):
-    """Download images, save them in an images folder, add them directly to the PDF, and compress the final PDF."""
+    """Download images, save them in an images folder, and add them directly to the PDF."""
     images_folder = os.path.join(output_folder, "images")
     os.makedirs(images_folder, exist_ok=True)  # Create the images folder inside the output folder
 
@@ -49,17 +49,7 @@ def process_images(images, paper_name, pdf, output_folder):
     output_pdf_path = os.path.join(output_folder, f"{paper_name}.pdf")
     pdf.output(output_pdf_path)
 
-    # Compress the PDF using pikepdf
-    compressed_pdf_path = os.path.join(output_folder, f"{paper_name}_compressed.pdf")
-    try:
-        with pikepdf.Pdf.open(output_pdf_path) as pdf_file:
-            pdf_file.save(compressed_pdf_path, optimize_content=True)
-        print(f"Compressed PDF saved as {compressed_pdf_path}")
-    except Exception as e:
-        print(f"Failed to compress PDF: {e}")
-        compressed_pdf_path = output_pdf_path  # Return the uncompressed PDF if compression fails
-
-    return compressed_pdf_path
+    return output_pdf_path
 
 
 # Function to upload the PDF and images folder to Mega
@@ -71,7 +61,9 @@ def upload_to_mega(folder_path, title, email, password):
 
     # Create a folder in Mega with the title name
     print(f"Creating folder '{title}' in Mega cloud...")
-    mega_folder = m.create_folder(title)
+    
+    mega_folder = m.create_folder(f"one_{title}")
+    
 
     # Upload all files and subfolders from the given folder path to the Mega folder
     for root, _, files in os.walk(folder_path):
@@ -81,16 +73,18 @@ def upload_to_mega(folder_path, title, email, password):
             m.upload(file_path, mega_folder[0])  # Upload file to the Mega folder
 
     print(f"Upload of '{title}' completed.")
-    # Cleanup after uploading to Mega Cloud
-    shutil.rmtree(os.path.join(title, "images"))  # Remove the images folder
-    os.remove(file_path)  # Remove the PDF file
-    print(f"Cleaned up local data for {title}.")
 
+    # Cleanup after uploading to Mega Cloud
+    shutil.rmtree(os.path.join(folder_path, "images"))  # Remove the images folder
+    pdf_path = os.path.join(folder_path, f"{title}.pdf")
+    if os.path.exists(pdf_path):
+        os.remove(pdf_path)  # Remove the PDF file
+    print(f"Cleaned up local data for {title}.")
 
 
 # Main function to generate the PDF
 def main_pdf(data, title, index):
-    """Generate a PDF with OCR text and pure images, saving data into a structured folder."""
+    """Generate a PDF and save data into a structured folder."""
     # Create the output folder for this title
     output_folder = f"{index}_{title}"
     os.makedirs(output_folder, exist_ok=True)
@@ -99,7 +93,7 @@ def main_pdf(data, title, index):
     for list_item_obj in data:
         for key in list_item_obj:
             paper_list.append(key)
-    
+
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=5)
 
@@ -107,16 +101,15 @@ def main_pdf(data, title, index):
     for i, paper_name in enumerate(paper_list):
         images = data[i].get(paper_name, [])
         if images:
-            pdf = process_images(images, paper_name, pdf, output_folder)
+            process_images(images, paper_name, pdf, output_folder)
 
     # Save the final PDF
-    pdf_output_path = os.path.join(output_folder, f"{title}_ocr.pdf")
+    pdf_output_path = os.path.join(output_folder, f"{title}.pdf")
     pdf.output(pdf_output_path)
 
     # Upload the entire folder to Mega Cloud
-    email = "afg154006@gmail.com"
+    email = "afg154010@gmail.com" 
     password = "megaMac02335!"
     upload_to_mega(output_folder, title, email, password)
 
-    # Cleanup
     print(f"PDF and images saved in {output_folder}")
