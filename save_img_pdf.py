@@ -7,7 +7,7 @@ from reportlab.pdfgen import canvas
 from mega import Mega
 import shutil
 from io import BytesIO
-
+import re
 def download_img(img_src,title,length,c):
     folder_name = "images"
     
@@ -20,12 +20,35 @@ def download_img(img_src,title,length,c):
     try:
         res = requests.get(img_src)
         res.raise_for_status()
-        # Check the size of the image in bytes
         img_data = res.content
-        print(len(img_data))
-        img = Image.open(BytesIO(res.content))
-        img.save(img_path)
-        c +=1
+
+        # Open the image
+        img = Image.open(BytesIO(img_data))
+
+        # Compress the image to below 50 KB
+        quality = 95  # Start with a high quality
+        buffer = BytesIO()
+
+        while True:
+            # Save the image with the current quality
+            img.save(buffer, format="JPEG", quality=quality)
+            img_size = buffer.tell()  # Get the size of the buffer in bytes
+
+            if img_size <= 50 * 1024 or quality <= 10:  # Stop if size <= 50 KB or quality is too low
+                break
+
+            quality -= 5  # Reduce quality in steps of 5
+            buffer.seek(0)  # Reset buffer for next iteration
+            buffer.truncate()
+
+        if img_size > 50 * 1024:
+            print(f"Could not compress {img_src} to below 50 KB. Final size: {img_size} bytes")
+        else:
+            # Save the compressed image to the desired path
+            with open(img_path, "wb") as f:
+                f.write(buffer.getvalue())
+            print(f"Compressed and saved image: {img_path} (size: {img_size} bytes)")
+            c += 1
 
         return c
     except requests.exceptions.RequestException as e:
@@ -41,8 +64,12 @@ def images_to_pdf(images_folder, output_pdf):
         if file.lower().endswith('.jpg')
     ]
     
-    # Sort files based on naming (optional, for ordered sequence)
-    image_files.sort()
+    # Sort files based on the `c` value extracted from the filename
+    def extract_c_value(filename):
+        match = re.match(r'(\d+)_', filename)
+        return int(match.group(1)) if match else float('inf')  # Sort invalid files last
+
+    image_files.sort(key=lambda x: extract_c_value(os.path.basename(x)))
 
     # Create a PDF file
     c = canvas.Canvas(output_pdf, pagesize=letter)
@@ -74,7 +101,6 @@ def images_to_pdf(images_folder, output_pdf):
     # Save the PDF
     c.save()
     print(f"PDF created successfully: {output_pdf}")
-
 def upload_to_mega(output_pdf,title,images_folder):
     mega = Mega()
     # key = os.getenv("M_TOKEN")
