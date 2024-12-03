@@ -42,19 +42,37 @@ def create_pdf(image_paths,title):
     
     return pdf_output_path
 
-# Function to upload the PDF to Mega
-def upload_to_mega(pdf_path, email, password,title):
+def upload_to_mega(pdf_path, email, password, title):
     # Log in to Mega
     mega = Mega()
-    print("new connection establing")
+    print("New connection establishing")
     m = mega.login(email, password)
+    
+    # Ensure the "images" folder exists before zipping it
+    if not os.path.exists("images"):
+        print("Error: The 'images' folder does not exist.")
+        return
+
+    # Create the zip file only if images are present
     output_zip = f"{title}.zip"
-    shutil.make_archive(output_zip,"zip","images")
-    print("Uploading to Mega cloud...")
+    try:
+        print(f"Creating zip archive for images: {output_zip}")
+        shutil.make_archive(output_zip, "zip", "images")
+    except Exception as e:
+        print(f"Error creating zip archive: {e}")
+        return
+
     # Upload the PDF file to Mega
+    print("Uploading PDF to Mega cloud...")
     m.upload(pdf_path)
-    m.upload(output_zip)
-    print("uploading completed..")
+    
+    # Upload the zip file to Mega
+    print(f"Uploading {output_zip} to Mega cloud...")
+    try:
+        m.upload(output_zip)
+        print("Uploading completed successfully.")
+    except Exception as e:
+        print(f"Error uploading zip file: {e}")
 
 
 def main_pdf(data,title,index):
