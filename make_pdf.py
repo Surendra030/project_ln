@@ -57,7 +57,7 @@ def upload_to_mega(pdf_path, email, password,title):
     print("uploading completed..")
 
 
-def main_pdf(data,title):
+def main_pdf(data,title,index):
     
     paper_list = []
 
