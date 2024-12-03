@@ -62,7 +62,7 @@ def upload_to_mega(folder_path, title, email, password):
     # Create a folder in Mega with the title name
     print(f"Creating folder '{title}' in Mega cloud...")
     
-    mega_folder = m.create_folder(f"two{title}")
+    mega_folder = m.create_folder(f"three_{title}")
     
 
     # Upload all files and subfolders from the given folder path to the Mega folder
