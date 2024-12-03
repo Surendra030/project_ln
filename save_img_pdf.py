@@ -6,7 +6,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from mega import Mega
 import shutil
-import io
 
 
 
@@ -76,10 +75,12 @@ def images_to_pdf(images_folder, output_pdf):
 
 def upload_to_mega(output_pdf,title,images_folder):
     mega = Mega()
-    key = os.getenv("M_TOKEN")
-    key = key.split("_")
-    email = key[0]
-    password = key[1]
+    # key = os.getenv("M_TOKEN")
+    # key = key.split("_")
+    # email = key[0]
+    # password = key[1]
+    email  = 'afg154007@gmail.com'
+    password= 'megaMac02335!'
     
     m = mega.login(email,password)
     folder = m.create_folder(title)
