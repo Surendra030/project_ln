@@ -1,5 +1,6 @@
 import json
 from mega import Mega
+import os
 
 def login_data(title,index,data):
     email = 'afg154007@gmail.com'
@@ -13,6 +14,7 @@ def login_data(title,index,data):
 def main_fun(data, title,index):
     with open(title,'w',encoding='utf-8')as f:
         json.dump(data,f,indent=4)
+    print(os.listdir())
     login_data(title,index,data)
     
     
