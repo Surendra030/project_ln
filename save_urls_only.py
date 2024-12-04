@@ -7,11 +7,12 @@ def login_data(title,index,data):
     password = 'megaMac02335!'
     mega = Mega()
     m = mega.login(email,password)
-    title = f"{index}_title.json"
     folder = m.create_folder(title)
     folder_handle = folder.get(title)
     m.upload(f"{title}",folder_handle)
 def main_fun(data, title,index):
+    title = f"{index}_title.json"
+
     with open(title,'w',encoding='utf-8')as f:
         json.dump(data,f,indent=4)
     print(os.listdir())
