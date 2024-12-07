@@ -39,4 +39,4 @@ jobs:
         env:
           M_TOKEN: ${{ secrets.M_TOKEN }}
         run: |
-          python main_file.py  # Replace with the actual Python script name
+          python main_file.py
