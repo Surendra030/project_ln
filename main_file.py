@@ -8,7 +8,7 @@ url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 
 data = main(url)
 data = [i for i in data  if "jobless" in i['title'].lower()]
-data = data[23:46]
+data = data[46:]
 constructed_urls = []
 
 def sanitize_title(title):
