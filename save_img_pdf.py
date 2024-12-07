@@ -89,8 +89,7 @@ def images_to_pdf(images_folder, output_pdf):
 def upload_to_mega(output_pdf,compress_pdf_path,title,images_folder):
     mega = Mega()
     
-    keys = os.getenv("M_token")
-    print(type(keys))
+    keys = os.getenv("M_TOKEN")
     keys = keys.split("_")
     email = keys[0]
     password= keys[1]
