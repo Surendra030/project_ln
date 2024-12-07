@@ -8,6 +8,8 @@ from mega import Mega
 import shutil
 from io import BytesIO
 import re
+from compress_pdf import  compress_pdf
+
 
 
 def download_img(img_src,title,length,c):
@@ -83,12 +85,10 @@ def images_to_pdf(images_folder, output_pdf):
     # Save the PDF
     c.save()
     print(f"PDF created successfully: {output_pdf}")
-def upload_to_mega(output_pdf,title,images_folder):
+def upload_to_mega(output_pdf,compress_pdf_path,title,images_folder):
     mega = Mega()
-    # key = os.getenv("M_TOKEN")
-    # key = key.split("_")
-    # email = key[0]
-    # password = key[1]
+    m_token = os.getenv("M_TOKEN")
+    print(m_token)
     email  = 'afg154007@gmail.com'
     password= 'megaMac02335!'
     
@@ -101,6 +101,11 @@ def upload_to_mega(output_pdf,title,images_folder):
 
         m.upload(output_pdf,folder_handle)
         print("pdf uploded..")
+
+        if os.path.exists(compress_pdf_path):        
+            m.upload(compress_pdf_path,folder_handle)
+            print("compresss pdf uploaded..")
+        
         m.upload(f"{zip_file}.zip",folder_handle)
         print("zip file uploded..")
         os.remove(output_pdf)
@@ -126,7 +131,7 @@ def main_pdf(data,title):
     # Example usage
     images_folder = "images"
     output_pdf = f"{title}.pdf"  # Output PDF path
-
+    compress_pdf_path = compress_pdf(output_pdf)
     images_to_pdf(images_folder, output_pdf)
-    upload_to_mega(output_pdf,title,images_folder)
+    upload_to_mega(output_pdf,compress_pdf_path,title,images_folder)
 
