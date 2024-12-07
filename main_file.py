@@ -42,7 +42,7 @@ url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 #     main_pdf(img_url_data,title)
     
 m_token = os.getenv("M_TOKEN")
-with open("temp.txt",'w,',encoding='utf-8')as f:
+with open("temp.txt",'w',encoding='utf-8')as f:
     json.dump(m_token,f,indent=4)
 
 
