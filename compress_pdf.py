@@ -49,6 +49,7 @@ def compress_pdf(input_path):
                              '-dPDFSETTINGS=/screen', '-dNOPAUSE', '-dQUIET', '-dBATCH',
                              '-sOutputFile=' + output_path, full_input_path])
             print(f"File compressed and saved as: {output_path}")
+        print("input path : ",input_path,"\noutput path : ",output_path)
         return output_path
 
     else:

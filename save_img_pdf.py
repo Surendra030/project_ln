@@ -9,7 +9,8 @@ import shutil
 from io import BytesIO
 import re
 from compress_pdf import  compress_pdf
-
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def download_img(img_src,title,length,c):
@@ -88,31 +89,39 @@ def images_to_pdf(images_folder, output_pdf):
 def upload_to_mega(output_pdf,compress_pdf_path,title,images_folder):
     mega = Mega()
     
-    email  = 'afg154007@gmail.com'
-    password= 'megaMac02335!'
+    keys = os.getenv("M_token")
+    keys = keys.split("_")
+    email = keys[0]
+    password= keys[1]
     
     m = mega.login(email,password)
     folder = m.create_folder(title)
     folder_handle = folder.get(title)
     zip_file = f"{title}"
+
     try:
         shutil.make_archive(f"{zip_file}","zip","images")
 
         m.upload(output_pdf,folder_handle)
         print("pdf uploded..")
-
+        m.upload(f"{zip_file}.zip",folder_handle)
+        print("zip file uploded..")
+        
+        print(compress_pdf_path)
         if os.path.exists(compress_pdf_path):        
             m.upload(compress_pdf_path,folder_handle)
             print("compresss pdf uploaded..")
         
-        m.upload(f"{zip_file}.zip",folder_handle)
-        print("zip file uploded..")
-        os.remove(output_pdf)
-        os.remove(f"{zip_file}.zip")
-        shutil.rmtree(images_folder)
+        
+        
 
     except Exception as e:
         print(e)
+
+    finally:
+        os.remove(output_pdf)
+        os.remove(f"{zip_file}.zip")
+        shutil.rmtree(images_folder)
     
 
 
