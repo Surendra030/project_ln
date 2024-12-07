@@ -2,7 +2,6 @@ import time
 from get_books_url import main
 from get_img_id import get_images_urls
 from save_img_pdf import main_pdf
-from save_urls_only import main_fun
 import re
 
 url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
@@ -10,7 +9,7 @@ url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 data = main(url)
 data = [i for i in data  if "jobless" in i['title'].lower()]
 constructed_urls = []
-data = data[59:]
+data = data[59:62]
 
 def sanitize_title(title):
     
@@ -34,8 +33,7 @@ for index,obj in enumerate(data):
     img_url_data = get_images_urls(obj['href'])
     #saving pdf file to cloud
     title = sanitize_title(obj['title'])
-    # main_pdf(img_url_data,title)
-    main_fun(img_url_data,title,index)
+    main_pdf(img_url_data,title)
     
 
     
