@@ -16,10 +16,8 @@ options.add_argument("--no-sandbox")
 chromedriver_path = r"chromedriver"
 
 # Output data
-output_data = []
 
 # Create a set to keep track of unique image URLs to avoid duplicates
-unique_image_urls = set()
 
 def get_images_urls(url):
     # Try to open the main URL
@@ -30,6 +28,7 @@ def get_images_urls(url):
         driver.get(url)
         print("Loading for 5 seconds...")
         time.sleep(5)  # Allow time for the page to load
+        output_data = []
 
         # Find total pages (from #currentPageIndexTextField)
         page_index_element = driver.find_element(By.ID, "currentPageIndexTextField")
