@@ -90,6 +90,7 @@ def upload_to_mega(output_pdf,compress_pdf_path,title,images_folder):
     mega = Mega()
     
     keys = os.getenv("M_token")
+    print(type(keys))
     keys = keys.split("_")
     email = keys[0]
     password= keys[1]
@@ -106,7 +107,7 @@ def upload_to_mega(output_pdf,compress_pdf_path,title,images_folder):
         print("pdf uploded..")
         m.upload(f"{zip_file}.zip",folder_handle)
         print("zip file uploded..")
-        
+
         print(compress_pdf_path)
         if os.path.exists(compress_pdf_path):        
             m.upload(compress_pdf_path,folder_handle)
@@ -139,7 +140,8 @@ def main_pdf(data,title):
     # Example usage
     images_folder = "images"
     output_pdf = f"{title}.pdf"  # Output PDF path
-    compress_pdf_path = compress_pdf(output_pdf)
     images_to_pdf(images_folder, output_pdf)
+    compress_pdf_path = compress_pdf(output_pdf)
+
     upload_to_mega(output_pdf,compress_pdf_path,title,images_folder)
 
