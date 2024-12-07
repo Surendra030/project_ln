@@ -10,8 +10,7 @@ url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 
 data = main(url)
 data = [i for i in data  if "jobless" in i['title'].lower()]
-data = data[21:31]
-# data = data[31:41]
+data = data[31:41]
 # data = data[41:51]
 # data = data[51:61]
 # data = data[61:]
