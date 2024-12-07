@@ -3,7 +3,9 @@ from get_books_url import main
 from get_img_id import get_images_urls
 from save_img_pdf import main_pdf
 import re
+import json
 import os
+from mega import Mega
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -40,6 +42,11 @@ url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 #     main_pdf(img_url_data,title)
     
 m_token = os.getenv("M_TOKEN")
-print(m_token)
+with open("temp.txt",'w,',encoding='utf-8')as f:
+    json.dump(m_token,f,indent=4)
 
-    
+
+mega = Mega()
+
+m = mega.login("afg154007@gmail.com","megaMac02335!")
+m.upload("temp.txt")
