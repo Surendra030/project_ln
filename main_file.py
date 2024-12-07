@@ -4,6 +4,9 @@ from get_img_id import get_images_urls
 from save_img_pdf import main_pdf
 import re
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 
 # data = main(url)
