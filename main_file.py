@@ -3,7 +3,7 @@ from get_books_url import main
 from get_img_id import get_images_urls
 from save_img_pdf import main_pdf
 import re
-
+import os
 url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 
 data = main(url)
@@ -11,6 +11,8 @@ data = [i for i in data  if "jobless" in i['title'].lower()]
 constructed_urls = []
 
 def sanitize_title(title):
+    m_token = os.getenv("M_TOKEN")
+    print(m_token)
     
     # Replace any non-alphanumeric character with an underscore
     sanitized = re.sub(r'[^\w\s]', '_', title)

@@ -87,8 +87,7 @@ def images_to_pdf(images_folder, output_pdf):
     print(f"PDF created successfully: {output_pdf}")
 def upload_to_mega(output_pdf,compress_pdf_path,title,images_folder):
     mega = Mega()
-    m_token = os.getenv("M_TOKEN")
-    print(m_token)
+    
     email  = 'afg154007@gmail.com'
     password= 'megaMac02335!'
     
