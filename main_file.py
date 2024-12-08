@@ -10,8 +10,22 @@ import re
 url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 
 data = main(url)
-sindex =0
-eindex = 1
+sindex=0
+eindex=11
+# sindex=11
+# eindex=21
+# sindex=21
+# eindex=31
+# sindex=31
+# eindex=41
+# sindex=41
+# eindex=51
+# sindex=51
+# eindex=61
+# sindex=61
+# eindex=71
+# sindex=71
+# eindex=81
 
 data = [
     {**i, 'serial_num': idx}  # Add the 'serial_num' label starting from sindex
