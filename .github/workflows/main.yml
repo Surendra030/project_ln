@@ -32,7 +32,7 @@ jobs:
           sudo apt-get install -y poppler-utils
 
           python -m pip install --upgrade pip
-          pip install pikepdf pdf2image moviepy requests Pillow fpdf mega.py selenium  python-dotenv  reportlab
+          pip install pymongo pikepdf pdf2image moviepy requests Pillow fpdf mega.py selenium  python-dotenv  reportlab
 
 
       
@@ -40,5 +40,6 @@ jobs:
       - name: Run upload script
         env:
           M_TOKEN: ${{ secrets.M_TOKEN }}
+          MONGO_URL: ${{ secrets.MONGO_URL }}
         run: |
           python main_file.py

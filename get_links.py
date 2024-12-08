@@ -1,6 +1,7 @@
 import json
 from mega import Mega
 import os
+from pymongo import MongoClient
 
 
 def main_load(title):
@@ -68,14 +69,41 @@ def main_load(title):
     # Start by getting links for the root files and folders
     get_shareable_links(files)
 
+    def save_to_db(file_link, title):
+        mongo_url = os.getenv("MONGO_URL")
+
+# Create a MongoDB client
+        client = MongoClient(mongo_url)
+
+        db = client["file_links"]  # Database name
+        collection = db["links_coll"] 
+    # Create the document structure
+        document = {
+            "novel_title": title,
+            "sharable_link": file_link
+        }
+        
+        # Insert the document into the collection
+        try:
+            collection.insert_one(document)
+            print(f"Document for '{title}' saved successfully.")
+        except Exception as e:
+            print(f"Error saving document for '{title}': {e}")
+
     # Save the dictionary to a JSON file
     print("Saving shareable links to 'file_links.json'...")
     
-    with open(f'{title}.json', 'w') as json_file:
+    with open(f'{title}_links.json', 'w') as json_file:
         json.dump(file_links, json_file, indent=4)
-    file = m.create_folder("sharable_links")
+
+    file = m.create_folder("meta_data")
     file_handle= file.get(title)
     m.upload(f"{title}.json",file_handle)
+    
+    file_link = m.export(f"{title}.json")
+    if file_link:
+        save_to_db(file_link,title)
+
     print("File links have been successfully saved to 'file_links.json'.")
 
 

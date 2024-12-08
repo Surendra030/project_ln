@@ -9,103 +9,103 @@ import os
 import re
 import json
 
-mega = Mega()
+# mega = Mega()
 
-def login_part(mega):
-    """Login to Mega using environment variables."""
-    try:
-        print("Logging in to Mega...")
-        keys = os.getenv("M_TOKEN")
-        if not keys:
-            raise ValueError("Mega credentials are not set in environment variables.")
+# def login_part(mega):
+#     """Login to Mega using environment variables."""
+#     try:
+#         print("Logging in to Mega...")
+#         keys = os.getenv("M_TOKEN")
+#         if not keys:
+#             raise ValueError("Mega credentials are not set in environment variables.")
         
-        keys = keys.split("_")
-        if len(keys) != 2:
-            raise ValueError("Mega credentials are incorrectly formatted in environment variables.")
+#         keys = keys.split("_")
+#         if len(keys) != 2:
+#             raise ValueError("Mega credentials are incorrectly formatted in environment variables.")
         
-        m = mega.login(keys[0], keys[1])
-        print("Logged in to Mega successfully.")
-        return m
-    except Exception as e:
-        print(f"Error during Mega login: {e}")
-        return None
+#         m = mega.login(keys[0], keys[1])
+#         print("Logged in to Mega successfully.")
+#         return m
+#     except Exception as e:
+#         print(f"Error during Mega login: {e}")
+#         return None
 
-def download_file(m, file_name):
-    try:
+# def download_file(m, file_name):
+#     try:
 
         
-        file_link = m.export(file_name)
-        print(file_link)
-        print(f"Folder '{file_name}' found. Listing all files in this folder:")
-        m.download(file_link)
+#         file_link = m.export(file_name)
+#         print(file_link)
+#         print(f"Folder '{file_name}' found. Listing all files in this folder:")
+#         m.download(file_link)
         
-        return file_name
+#         return file_name
 
-    except Exception as e:
-        print(f"Error downloading file '{file_name}': {e}")
-        return None
+#     except Exception as e:
+#         print(f"Error downloading file '{file_name}': {e}")
+#         return None
 
-def process_links(m, links_data, audio_file):
-    """Process the links data."""
-    try:
-        if not m:
-            raise ConnectionError("Mega instance is not initialized.")
+# def process_links(m, links_data, audio_file):
+#     """Process the links data."""
+#     try:
+#         if not m:
+#             raise ConnectionError("Mega instance is not initialized.")
         
-        print(f"Processing {len(links_data)} links...")
-        for key, snippet in links_data.items():
-            file_name = snippet.get("file_name", "No file_name found")
-            link = snippet.get("sharable_link", "No link available")
+#         print(f"Processing {len(links_data)} links...")
+#         for key, snippet in links_data.items():
+#             file_name = snippet.get("file_name", "No file_name found")
+#             link = snippet.get("sharable_link", "No link available")
             
-            exten = file_name.split(".")[-1]
-            output_path = file_name.split(".")[0]
-            main_folder_name = output_path.split("_")[1] if "_" in output_path else "default_folder"
+#             exten = file_name.split(".")[-1]
+#             output_path = file_name.split(".")[0]
+#             main_folder_name = output_path.split("_")[1] if "_" in output_path else "default_folder"
             
-            print(f"Processing file: {file_name}, Type: {exten}")
+#             print(f"Processing file: {file_name}, Type: {exten}")
             
-            if exten == 'pdf' and "compress" not in output_path:
-                print(f"Starting video creation for {file_name}...")
-                start(link,file_name, audio_file, output_path, main_folder_name)
-            else:
-                print(f"Skipping file: {file_name}, as it does not meet criteria.")
+#             if exten == 'pdf' and "compress" not in output_path:
+#                 print(f"Starting video creation for {file_name}...")
+#                 start(link,file_name, audio_file, output_path, main_folder_name)
+#             else:
+#                 print(f"Skipping file: {file_name}, as it does not meet criteria.")
     
     
-    except Exception as e:
-        print(f"Error processing links: {e}")
+#     except Exception as e:
+#         print(f"Error processing links: {e}")
 
-def main():
-    """Main function to execute the workflow."""
-    file_name = "file_links.json"
-    audio_file = "audio.mp3"
+# def main():
+#     """Main function to execute the workflow."""
+#     file_name = "file_links.json"
+#     audio_file = "audio.mp3"
 
-    # Login to Mega
-    m = login_part(mega)
-    if not m:
-        print("Failed to log in to Mega. Exiting.")
-        return
+#     # Login to Mega
+#     m = login_part(mega)
+#     if not m:
+#         print("Failed to log in to Mega. Exiting.")
+#         return
 
-    # Download required files
-    downloaded_file = download_file(m, file_name)
-    downloaded_audio = download_file(m, audio_file)
+#     # Download required files
+#     downloaded_file = download_file(m, file_name)
+#     downloaded_audio = download_file(m, audio_file)
 
-    if not downloaded_file or not downloaded_audio:
-        print("Required files are missing. Exiting.")
-        return
+#     if not downloaded_file or not downloaded_audio:
+#         print("Required files are missing. Exiting.")
+#         return
 
-    # Load links data
-    try:
-        with open(downloaded_file, 'r', encoding='utf-8') as f:
-            links_data = json.load(f)
-        # Limit to a subset of data for testing
-        links_data = {k: links_data[k] for k in list(links_data)[:2]}
-    except Exception as e:
-        print(f"Error reading links data: {e}")
-        return
+#     # Load links data
+#     try:
+#         with open(downloaded_file, 'r', encoding='utf-8') as f:
+#             links_data = json.load(f)
+#         # Limit to a subset of data for testing
+#         links_data = {k: links_data[k] for k in list(links_data)[:2]}
+#     except Exception as e:
+#         print(f"Error reading links data: {e}")
+#         return
 
-    # Process the links
-    process_links(m, links_data, downloaded_audio)
+#     # Process the links
+#     process_links(m, links_data, downloaded_audio)
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
 
 
@@ -121,8 +121,7 @@ if __name__ == "__main__":
 # sindex=61
 # eindex=71
 
-# target_name = "jobless"
-
+target_name = "jobless"
 # data = [
 #     {**i, 'serial_num': idx}  # Add the 'serial_num' label starting from sindex
 #     for idx, i in enumerate(data, start=sindex)  # Start enumerate from sindex
@@ -159,5 +158,5 @@ if __name__ == "__main__":
 #     title = sanitize_title(temp_title)
 
 #     main_pdf(img_url_data,title)
-#     main_load(target_name)
+main_load(target_name)
 
