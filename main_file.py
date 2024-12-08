@@ -12,10 +12,9 @@ url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 data = main(url)
 
 
-sindex=21
-eindex=31
-# sindex=31
-# eindex=41
+
+sindex=31
+eindex=41
 # sindex=41
 # eindex=51
 # sindex=51
