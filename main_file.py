@@ -30,19 +30,39 @@ def login_part(mega):
         print(f"Error during Mega login: {e}")
         return None
 
-def download_file(m, file_name):
-    """Download a file from Mega."""
+def download_file(m, folder_name, file_name):
+    output_name = file_name
     try:
-        print(f"Attempting to find and download {file_name}...")
-        file_obj = m.find(file_name)
-        if file_obj is None:
-            print(f"File {file_name} not found on Mega.")
+        print(f"Looking for folder '{folder_name}' on Mega...")
+        all_folders = m.get_files()
+
+        # Find the folder
+        folder = next(
+            (item for item in all_folders.values() if item['a']['n'] == folder_name and item['t'] == 0), 
+            None
+        )
+        if not folder:
+            print(f"Folder '{folder_name}' not found.")
             return None
-        m.download(file_obj,file_name)
-        print(f"File {file_name} downloaded successfully.")
-        return file_name
+
+        # Find the file in the folder
+        file = next(
+            (item for item in all_folders.values() if item['a']['n'] == file_name and item['p'] == folder['h']),
+            None
+        )
+        if not file:
+            print(f"File '{file_name}' not found in folder '{folder_name}'.")
+            return None
+
+        # Download the file
+        print(f"Downloading '{file_name}' from folder '{folder_name}'...")
+        local_name = output_name or file_name
+        m.download(file, dest_filename=local_name)
+        print(f"File '{file_name}' downloaded successfully as '{local_name}'.")
+        return local_name
+
     except Exception as e:
-        print(f"Error downloading file {file_name}: {e}")
+        print(f"Error downloading file '{file_name}': {e}")
         return None
 
 def process_links(m, links_data, audio_file):
@@ -74,8 +94,9 @@ def process_links(m, links_data, audio_file):
 
 def main():
     """Main function to execute the workflow."""
-    file_name = "meta_data/file_links.json"
-    audio_file = "meta_data/audio.mp3"
+    file_name = "file_links.json"
+    audio_file = "audio.mp3"
+    folder_name = "meta_data"
 
     # Login to Mega
     m = login_part(mega)
@@ -84,8 +105,8 @@ def main():
         return
 
     # Download required files
-    downloaded_file = download_file(m, file_name)
-    downloaded_audio = download_file(m, audio_file)
+    downloaded_file = download_file(m,folder_name, file_name)
+    downloaded_audio = download_file(m,folder_name, audio_file)
 
     if not downloaded_file or not downloaded_audio:
         print("Required files are missing. Exiting.")
