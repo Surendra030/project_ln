@@ -38,7 +38,7 @@ def download_file(m, file_name):
         if file_obj is None:
             print(f"File {file_name} not found on Mega.")
             return None
-        m.download(file_obj)
+        m.download(file_obj,file_name)
         print(f"File {file_name} downloaded successfully.")
         return file_name
     except Exception as e:
@@ -64,9 +64,11 @@ def process_links(m, links_data, audio_file):
             
             if exten == 'pdf' and "compress" not in output_path:
                 print(f"Starting video creation for {file_name}...")
-                start(link, audio_file, output_path, main_folder_name)
+                start(link,file_name, audio_file, output_path, main_folder_name)
             else:
                 print(f"Skipping file: {file_name}, as it does not meet criteria.")
+    
+    
     except Exception as e:
         print(f"Error processing links: {e}")
 

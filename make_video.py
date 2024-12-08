@@ -1,20 +1,42 @@
 import os
 from mega import Mega
-from moviepy import ImageClip, concatenate_videoclips, AudioFileClip
+from moviepy.video.VideoClip import ImageClip
+from moviepy import concatenate_videoclips, AudioFileClip
 from pdf2image import convert_from_path
 
-
 def login_part():
-    keys = os.getenv("M_TOKEN")
-    keys = keys.split("_")
-    return keys
+    """Retrieve Mega credentials and log in."""
+    try:
+        keys = os.getenv("M_TOKEN")
+        if not keys:
+            raise ValueError("Mega credentials are not set in the environment variables.")
+        
+        keys = keys.split("_")
+        if len(keys) != 2:
+            raise ValueError("Mega credentials are not formatted correctly.")
+        
+        mega = Mega()
+        print("Logging into Mega...")
+        m = mega.login(keys[0], keys[1])
+        print("Login successful.")
+        return m
+    except Exception as e:
+        print(f"Error during login: {e}")
+        return None
 
-import os
+def download_file(m, url, output_name):
+    """Download a file from Mega by URL."""
+    try:
+        m.download(url,output_name)
+        return output_name
+    except Exception as e:
+        print(f"Error downloading file: {e}")
+        return None
 
 def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
-    
+    """Convert a PDF to a video with synchronized audio."""
     try:
-        # Step 1: Convert PDF pages to images and dynamically determine the total pages
+        # Convert PDF pages to images
         print(f"Converting PDF to images from {pdf_path}...")
         images = convert_from_path(pdf_path)
         total_pages = len(images)
@@ -28,24 +50,20 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
             image.save(image_name, 'JPEG')
 
             # Add the image as a video frame with duration
-            clip = ImageClip(image_name).with_duration(page_duration)
+            clip = ImageClip(image_name).set_duration(page_duration)
             image_clips.append(clip)
 
             # Clean up the temporary image file
             os.remove(image_name)
             print(f"Processed page {page_number + 1} of {total_pages}.")
 
-        # Step 2: Load the audio file
+        # Load the audio file
         print(f"Loading audio from {audio_path}...")
-        try:
-            audio_clip = AudioFileClip(audio_path)
-        except Exception as e:
-            print(f"Error loading audio file: {e}")
-            return
+        audio_clip = AudioFileClip(audio_path)
 
-        # Step 3: Split audio to match page durations
+        # Split audio to match page durations
         audio_duration = audio_clip.duration / len(image_clips)
-        print(f"Audio duration per page: {audio_duration} seconds.")
+        print(f"Audio duration per page: {audio_duration:.2f} seconds.")
 
         audio_intervals = [
             audio_clip.subclipped(i * audio_duration, (i + 1) * audio_duration)
@@ -57,11 +75,11 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
             clip.set_audio(audio_intervals[i]) for i, clip in enumerate(image_clips)
         ]
 
-        # Step 4: Concatenate the clips
+        # Concatenate the clips
         print("Concatenating video clips...")
         final_video = concatenate_videoclips(video_clips, method="compose")
 
-        # Step 5: Write the video to the output path
+        # Write the video to the output path
         print(f"Writing the video to {output_path}...")
         final_video.write_videofile(output_path, fps=24)
         print(f"Video created successfully: {output_path}")
@@ -69,24 +87,12 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
     except Exception as e:
         print(f"An error occurred during processing: {e}")
 
-# Assuming `m` is the Mega instance and `title` is the folder name
 def get_or_create_folder(m, title):
-    """
-    Retrieves an existing folder by title or creates a new one if it doesn't exist.
-
-    Args:
-        m: Mega instance (logged-in session).
-        title (str): The name of the folder to find or create.
-
-    Returns:
-        dict: The folder handler (metadata of the folder).
-    """
+    """Retrieve an existing folder by title or create a new one."""
     try:
         print(f"Checking for the existence of the folder '{title}'...")
-        # Fetch the list of folders
         all_folders = m.get_files()
 
-        # Look for the folder with the given title
         folder_handler = next(
             (folder for folder in all_folders.values() if folder['a']['n'] == title and folder['t'] == 1), None
         )
@@ -96,7 +102,6 @@ def get_or_create_folder(m, title):
             return folder_handler
         else:
             print(f"Folder '{title}' does not exist. Creating a new folder...")
-            # Create a new folder and return its handler
             folder = m.create_folder(title)
             folder_handler = folder.get(title)
             print(f"Folder '{title}' created successfully.")
@@ -106,26 +111,45 @@ def get_or_create_folder(m, title):
         print(f"An error occurred while handling the folder: {e}")
         return None
 
-
-
-def upload_mega(o_path,folder_title):
-   
+def upload_mega(o_path, folder_title):
+    """Upload a video file to Mega."""
     print(f"Uploading video to Mega: {o_path}")
-    mega = Mega()
-    keys = login_part()
-    m = mega.login(keys[0],keys[1])
-    folder_handler = get_or_create_folder(m,folder_title)
-    m.upload(o_path, folder_handler)
-    print("Uploading completed.")
+    try:
+        m = login_part()
+        if not m:
+            print("Failed to log in to Mega. Aborting upload.")
+            return
+        
+        folder_handler = get_or_create_folder(m, folder_title)
+        m.upload(o_path, folder_handler)
+        print("Upload completed successfully.")
+    except Exception as e:
+        print(f"Error uploading file: {e}")
 
-
-def start(pdf_url,audio_url,output_path,main_folder_path):
+def start(pdf_url,file_name, audio_url, output_path, main_folder_path):
     print("Starting process...")
-    
-    # Call the function to create the video
-    pdf_to_video(pdf_url, audio_url, output_path,main_folder_path)
+
+    # Login to Mega
+    m = login_part()
+    if not m:
+        print("Failed to log in to Mega. Exiting process.")
+        return
+
+    # Download the PDF file
+    pdf_path = download_file(m, pdf_url, file_name)
+    if not pdf_path:
+        print("Failed to download PDF. Exiting process.")
+        return
+
+    # Download the audio file
+    audio_path = download_file(m, audio_url, "audio.mp3")
+    if not audio_path:
+        print("Failed to download audio. Exiting process.")
+        return
+
+    # Create the video
+    pdf_to_video(pdf_path, audio_path, output_path)
 
     # Optionally upload to Mega
-    upload_mega(output_path,main_folder_path)
-# Example usage
-    
+    upload_mega(output_path, main_folder_path)
+
