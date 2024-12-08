@@ -3,6 +3,7 @@ from get_books_url import main
 from get_img_id import get_images_urls
 from save_img_pdf import main_pdf
 from make_video import start
+from get_links import main_load
 import re
 
 
@@ -39,4 +40,4 @@ import re
 #     title = sanitize_title(obj['title'])
 #     main_pdf(img_url_data,title)
     
-start()
+main_load()
