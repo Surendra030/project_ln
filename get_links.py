@@ -8,8 +8,8 @@ def main_load():
     # Log in to Mega account
     print("Logging into Mega account...")
     mega = Mega()
-
-    keys = os.getenv("M_TOKEN")
+    keys = "afg154007@gmail.com_megaMac02335!"
+    # keys = os.getenv("M_TOKEN")
     keys = keys.split("_")
     email =keys[0] # Replace with your Mega email
     password = keys[1]  # Replace with your Mega password
@@ -36,7 +36,7 @@ def main_load():
     def get_shareable_links(file_dict):
         l = len(file_dict)
 
-        for i, file in enumerate(file_dict, start=1):
+        for i, file in enumerate(file_dict.values(), start=1):
             print(file)
             file_name = file['a']['n']  # The file name
             file_id = file['h']  # The file ID
@@ -44,10 +44,13 @@ def main_load():
             # If it's a file, 
             if file['t'] == 0: 
                 if file_id:
+                    
                     parent_folder_id = file['p']
                     parent_folder_name = get_folder_name(parent_folder_id,file_dict)
                     try:
-                        file_url = m.get_link(file)  # Generate shareable link
+                        print("started")
+                        file_url = m.export(file_name)  # Generate shareable link
+                        print("passed.")
                         file_links[file_name] = {
                             "file_name": file_name,
                             "folder_name":parent_folder_name,
@@ -55,7 +58,6 @@ def main_load():
                         }
                     except Exception as e:
                         print(f"Error generating link for file: {file_name}. Error: {e}")
-                
                 else:
                     print(f"Skipping file (missing file ID): {file_name}")
             
@@ -75,3 +77,6 @@ def main_load():
 
     m.upload("file_links.json")
     print("File links have been successfully saved to 'file_links.json'.")
+
+
+main_load()
