@@ -8,8 +8,7 @@ def main_load():
     # Log in to Mega account
     print("Logging into Mega account...")
     mega = Mega()
-    keys = "afg154007@gmail.com_megaMac02335!"
-    # keys = os.getenv("M_TOKEN")
+    keys = os.getenv("M_TOKEN")
     keys = keys.split("_")
     email =keys[0] # Replace with your Mega email
     password = keys[1]  # Replace with your Mega password
