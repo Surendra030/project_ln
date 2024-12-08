@@ -20,7 +20,6 @@ def main_load(title):
     # Get a list of all files in your Mega account
     print("Retrieving files from your Mega account...")
     files = m.get_files()
-    print(f"Found {len(files)} files.")
 
     # Prepare a dictionary to store the file names and shareable links
     file_links = {}
@@ -47,9 +46,7 @@ def main_load(title):
                     parent_folder_id = file['p']
                     parent_folder_name = get_folder_name(parent_folder_id,file_dict)
                     try:
-                        print("started")
                         file_url = m.export(file_name)  # Generate shareable link
-                        print("passed.")
                         file_links[file_name] = {
                             "file_name": file_name,
                             "folder_name":parent_folder_name,
@@ -90,16 +87,18 @@ def main_load(title):
         except Exception as e:
             print(f"Error saving document for '{title}': {e}")
 
+
+    title = f"{title}_links"
+
     # Save the dictionary to a JSON file
-    print("Saving shareable links to 'file_links.json'...")
+    print(f"Saving shareable links to '{title}.json'...")
     
-    with open(f'{title}_links.json', 'w') as json_file:
+    with open(f'{title}.json', 'w') as json_file:
         json.dump(file_links, json_file, indent=4)
 
-    file = m.create_folder("meta_data")
-    file_handle= file.get(title)
-    m.upload(f"{title}.json",file_handle)
-    
+    folder = m.find("meta_data")
+    m.upload(f"{title}.json",folder)
+
     file_link = m.export(f"{title}.json")
     if file_link:
         save_to_db(file_link,title)
