@@ -62,9 +62,14 @@ def download_file(m, folder_name, file_name):
             print(f"File '{file_name}' not found in folder '{folder_name}'.")
             return None
 
+        print(f"Found file '{file_name}' with ID: {file['h']}")
+
         # Download the file
         print(f"Downloading '{file_name}' from folder '{folder_name}'...")
         local_name = output_name or file_name
+        
+        # Check if the file can be downloaded (adding an extra log to debug)
+        print(f"Attempting to download file with ID: {file['h']}")
         m.download(file, dest_filename=local_name)
         print(f"File '{file_name}' downloaded successfully as '{local_name}'.")
         return local_name
