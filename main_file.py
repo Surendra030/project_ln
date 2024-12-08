@@ -38,7 +38,7 @@ def download_file(m, folder_name, file_name):
 
         # Find the folder
         folder = next(
-            (item for item in all_folders.values() if item['a']['n'] == folder_name and item['t'] == 0), 
+            (item for item in all_folders.values() if item['a']['n'] == folder_name and item['t'] > 0), 
             None
         )
         if not folder:
