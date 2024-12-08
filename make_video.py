@@ -18,7 +18,7 @@ def download_file_from_mega(url, output_path):
         url (str): Mega.nz file URL.
         output_path (str): Path to save the downloaded file.
     """
-    print(f"Downloading file from Mega URL: {url}")
+    print(f"Downloading file from Mega URL")
     
     # Initialize Mega API
     mega = Mega()
@@ -135,7 +135,7 @@ def upload_mega(o_path):
 def start():
     print("Starting process...")
     pdf_url = "https://mega.nz/file/KMQH0T6J#01dkodTbqfwtZF7oibEgASkp7rHryvzyKlEsLFhgxN0"  # PDF file URL
-    audio_url = "https://mega.nz/file/bEwEjaxa#zHFepXFPM3DCF3kZLYk9lyDyYag2kFzwZzPXj_IJmIA"  # Audio file URL
+    audio_url = "https://mega.nz/file/ScYViJaZ#U6DHMdMBgAF1ngVO3bL244QlNJq65UCuDgygL0vnSe4"
     output_path = "output.mp4"  # Path to save the output video
 
     # Call the function to create the video
