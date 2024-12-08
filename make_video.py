@@ -137,7 +137,7 @@ def start():
     print("Starting process...")
     pdf_url = "https://mega.nz/file/KMQH0T6J#01dkodTbqfwtZF7oibEgASkp7rHryvzyKlEsLFhgxN0"  # PDF file URL
     audio_url = "https://mega.nz/file/ScYViJaZ#U6DHMdMBgAF1ngVO3bL244QlNJq65UCuDgygL0vnSe4"
-    output_path = "output.mp4"  # Path to save the output video
+    output_path = "output1.mp4"  # Path to save the output video
 
     # Call the function to create the video
     pdf_to_video(pdf_url, audio_url, output_path)
