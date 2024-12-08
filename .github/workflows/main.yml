@@ -29,6 +29,8 @@ jobs:
       # Step 3: Install dependencies
       - name: Install dependencies
         run: |
+          sudo apt-get install -y poppler-utils
+
           python -m pip install --upgrade pip
           pip install pikepdf pdf2image moviepy requests Pillow fpdf mega.py selenium  python-dotenv  reportlab
 
