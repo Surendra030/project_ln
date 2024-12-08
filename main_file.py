@@ -45,5 +45,7 @@ for index,entity_obj in enumerate(data):
 for index,obj in enumerate(data):
     img_url_data = get_images_urls(obj['href'])
     #saving pdf file to cloud
-    title = sanitize_title(obj['title'])
+    temp_title = f"{obj['serial_num']}_{obj['title']}"
+    title = sanitize_title(temp_title)
+
     main_pdf(img_url_data,title)
