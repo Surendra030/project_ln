@@ -36,7 +36,8 @@ def main_load():
     def get_shareable_links(file_dict):
         l = len(file_dict)
 
-        for i, file in enumerate(file_dict.values(), start=1):
+        for i, file in enumerate(file_dict, start=1):
+            print(file)
             file_name = file['a']['n']  # The file name
             file_id = file['h']  # The file ID
             
