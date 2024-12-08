@@ -3,7 +3,6 @@ from get_books_url import main
 from get_img_id import get_images_urls
 from save_img_pdf import main_pdf
 from make_video import start
-from get_links import main_load
 import re
 
 
@@ -12,7 +11,7 @@ url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 
 data = main(url)
 sindex =0
-eindex = 2
+eindex = 1
 
 data = [
     {**i, 'serial_num': idx}  # Add the 'serial_num' label starting from sindex
@@ -48,4 +47,3 @@ for index,obj in enumerate(data):
     #saving pdf file to cloud
     title = sanitize_title(obj['title'])
     main_pdf(img_url_data,title)
-    # main_load()

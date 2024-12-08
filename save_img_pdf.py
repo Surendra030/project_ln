@@ -1,4 +1,3 @@
-import json
 import os
 import requests
 from PIL import Image
@@ -9,8 +8,6 @@ import shutil
 from io import BytesIO
 import re
 from compress_pdf import  compress_pdf
-from dotenv import load_dotenv
-load_dotenv()
 
 
 def download_img(img_src,title,length,c):
