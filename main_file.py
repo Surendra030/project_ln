@@ -30,49 +30,23 @@ def login_part(mega):
         print(f"Error during Mega login: {e}")
         return None
 
-def download_file(m, folder_name, file_name):
-    output_name = file_name
+def download_file(m, file_name):
     try:
-        print(f"Looking for folder '{folder_name}' on Mega...")
         all_folders = m.get_files()
 
         # Find the folder
-        folder = next(
-            (item for item in all_folders.values() if item['a']['n'] == folder_name and item['t'] > 0), 
-            None
-        )
-        if not folder:
-            print(f"Folder '{folder_name}' not found.")
-            return None
-
-        print(f"Folder '{folder_name}' found. Listing all files in this folder:")
-        # List all files in the folder
-        files_in_folder = [
-            item for item in all_folders.values() if item['p'] == folder['h']
-        ]
-        for file in files_in_folder:
-            print(f"- {file['a']['n']} (ID: {file['h']})")
-
-        # Find the specific file in the folder
         file = next(
-            (item for item in files_in_folder if item['a']['n'] == file_name),
+            (item for item in all_folders.values() if item['a']['n'] == file_name and item['t'] == 0), 
             None
         )
         if not file:
-            print(f"File '{file_name}' not found in folder '{folder_name}'.")
+            print(f"Folder '{file_name}' not found.")
             return None
 
-        print(f"Found file '{file_name}' with ID: {file['h']}")
-
-        # Download the file
-        print(f"Downloading '{file_name}' from folder '{folder_name}'...")
-        local_name = output_name or file_name
+        print(f"Folder '{file_name}' found. Listing all files in this folder:")
+        m.download(file,file_name)
         
-        # Check if the file can be downloaded (adding an extra log to debug)
-        print(f"Attempting to download file with ID: {file['h']}")
-        m.download(file, dest_filename=local_name)
-        print(f"File '{file_name}' downloaded successfully as '{local_name}'.")
-        return local_name
+        return file_name
 
     except Exception as e:
         print(f"Error downloading file '{file_name}': {e}")
@@ -109,7 +83,6 @@ def main():
     """Main function to execute the workflow."""
     file_name = "file_links.json"
     audio_file = "audio.mp3"
-    folder_name = "meta_data"
 
     # Login to Mega
     m = login_part(mega)
@@ -118,8 +91,8 @@ def main():
         return
 
     # Download required files
-    downloaded_file = download_file(m,folder_name, file_name)
-    downloaded_audio = download_file(m,folder_name, audio_file)
+    downloaded_file = download_file(m, file_name)
+    downloaded_audio = download_file(m, audio_file)
 
     if not downloaded_file or not downloaded_audio:
         print("Required files are missing. Exiting.")
