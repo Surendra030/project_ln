@@ -44,10 +44,18 @@ def download_file(m, folder_name, file_name):
         if not folder:
             print(f"Folder '{folder_name}' not found.")
             return None
-        print(folder)
-        # Find the file in the folder
+
+        print(f"Folder '{folder_name}' found. Listing all files in this folder:")
+        # List all files in the folder
+        files_in_folder = [
+            item for item in all_folders.values() if item['p'] == folder['h']
+        ]
+        for file in files_in_folder:
+            print(f"- {file['a']['n']} (ID: {file['h']})")
+
+        # Find the specific file in the folder
         file = next(
-            (item for item in all_folders.values() if item['a']['n'] == file_name and item['p'] == folder['h']),
+            (item for item in files_in_folder if item['a']['n'] == file_name),
             None
         )
         if not file:
