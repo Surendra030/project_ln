@@ -124,9 +124,10 @@ def upload_mega(o_path):
     mega = Mega()
     keys = login_part()
     m = mega.login(keys[0],keys[1])
-
-    folder = m.create_folder("video_files")
-    folder_handler = folder.get(folder)
+    title = "video_files"
+    folder = m.create_folder(title)
+    print(folder)
+    folder_handler = folder.get(title)
     m.upload(o_path, folder_handler)
     print("Uploading completed.")
 
