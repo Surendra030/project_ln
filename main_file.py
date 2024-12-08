@@ -32,19 +32,10 @@ def login_part(mega):
 
 def download_file(m, file_name):
     try:
-        all_folders = m.get_files()
 
-        # Find the folder
-        file = next(
-            (item for item in all_folders.values() if item['a']['n'] == file_name and item['t'] == 0), 
-            None
-        )
-        print(file)
-        file_link = m.export(file)
-        if not file:
-            print(f"Folder '{file_name}' not found.")
-            return None
-
+        
+        file_link = m.export(file_name)
+        
         print(f"Folder '{file_name}' found. Listing all files in this folder:")
         m.download(file_link)
         
