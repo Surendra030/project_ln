@@ -74,8 +74,8 @@ def process_links(m, links_data, audio_file):
 
 def main():
     """Main function to execute the workflow."""
-    file_name = "file_links.json"
-    audio_file = "audio.mp3"
+    file_name = "meta_data/file_links.json"
+    audio_file = "meta_data/audio.mp3"
 
     # Login to Mega
     m = login_part(mega)
