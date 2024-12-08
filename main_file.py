@@ -10,10 +10,9 @@ import re
 url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 
 data = main(url)
-sindex=0
-eindex=11
-# sindex=11
-# eindex=21
+
+sindex=11
+eindex=21
 # sindex=21
 # eindex=31
 # sindex=31
