@@ -3,7 +3,7 @@ from mega import Mega
 import os
 
 
-def main_load():
+def main_load(title):
     
     # Log in to Mega account
     print("Logging into Mega account...")
@@ -70,11 +70,12 @@ def main_load():
 
     # Save the dictionary to a JSON file
     print("Saving shareable links to 'file_links.json'...")
-    with open('file_links.json', 'w') as json_file:
+    
+    with open(f'{title}.json', 'w') as json_file:
         json.dump(file_links, json_file, indent=4)
-
-    m.upload("file_links.json")
+    file = m.create_folder("sharable_links")
+    file_handle= file.get(title)
+    m.upload(f"{title}.json",file_handle)
     print("File links have been successfully saved to 'file_links.json'.")
 
 
-main_load()

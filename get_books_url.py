@@ -17,7 +17,7 @@ chromedriver_path = r"chromedriver"
 service = Service(executable_path=chromedriver_path)
 driver = webdriver.Chrome(service=service, options=options)
 
-def main(url):
+def main_books_fun(url):
     
     # Navigate to the website
     driver.get(url)
