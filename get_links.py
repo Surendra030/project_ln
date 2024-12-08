@@ -27,11 +27,11 @@ def main_load():
 
     print("Generating shareable links for the files...")
     
-    def get_folder_name(parent_id,file_dict):
-
-        for i, file in enumerate(file_dict.values(), start=1):
-            if file[i] == parent_id:
-                return file['a']['n']
+    def get_folder_name(parent_id, file_dict):
+        for file in file_dict.values():
+            if file['h'] == parent_id:  # Use 'h' for the file ID
+                return file['a']['n']  # Return the folder name from the 'a' dictionary
+        return None  
     # Function to get shareable links for all files recursively, including files in subfolders
     def get_shareable_links(file_dict):
         l = len(file_dict)
@@ -58,21 +58,6 @@ def main_load():
                 else:
                     print(f"Skipping file (missing file ID): {file_name}")
             
-            # If it's a folder (t > 0), recursively call the function to explore its contents
-            # elif file['t'] > 0:  # It's a folder
-            #     print(f"{i}/{l} : Entering folder: {file_name}")
-                
-            #     # To retrieve files from a folder, we should use the correct Mega method that handles folder IDs
-            #     try:
-            #         # Assuming you have a method in Mega class to fetch files inside a specific folder
-            #         folder_files = m.get_files()  # Modify this if Mega has a method to get files from a folder.
-                    
-            #         # If you have a method to fetch files in a folder, you can pass file_id to it
-            #         # For example: folder_files = m.get_files(file_id) 
-
-            #         get_shareable_links(folder_files)  # Recursively get links from the folder's contents
-            #     except Exception as e:
-            #         print(f"Error processing folder: {file_name}. Error: {e}")
 
                 
             # Print progress every 100 files
