@@ -37,7 +37,6 @@ def main_load():
         l = len(file_dict)
 
         for i, file in enumerate(file_dict.values(), start=1):
-            print(file)
             file_name = file['a']['n']  # The file name
             file_id = file['h']  # The file ID
             
