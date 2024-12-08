@@ -15,12 +15,10 @@ data = main(url)
 
 
 
-sindex=51
-eindex=61
-# sindex=61
-# eindex=71
-# sindex=71
-# eindex=81
+
+sindex=61
+eindex=71
+
 
 data = [
     {**i, 'serial_num': idx}  # Add the 'serial_num' label starting from sindex
