@@ -26,22 +26,30 @@ def main_load():
     file_links = {}
 
     print("Generating shareable links for the files...")
+    
+    def get_folder_name(parent_id,file_dict):
 
+        for i, file in enumerate(file_dict.values(), start=1):
+            if file[i] == parent_id:
+                return file['a']['n']
     # Function to get shareable links for all files recursively, including files in subfolders
     def get_shareable_links(file_dict):
-        l = len(file_dict.values())
+        l = len(file_dict)
 
         for i, file in enumerate(file_dict.values(), start=1):
             file_name = file['a']['n']  # The file name
             file_id = file['h']  # The file ID
             
-            # If it's a folder, recursively call this function to explore its contents
-            if file['t'] == 0:  # It's a folder
+            # If it's a file, 
+            if file['t'] == 0: 
                 if file_id:
+                    parent_folder_id = file['p']
+                    parent_folder_name = get_folder_name(parent_folder_id,file_dict)
                     try:
-                        file_url = m.get_link(file_id)  # Generate shareable link
+                        file_url = m.get_link(file)  # Generate shareable link
                         file_links[file_name] = {
                             "file_name": file_name,
+                            "folder_name":parent_folder_name,
                             "sharable_link": file_url
                         }
                     except Exception as e:
@@ -49,6 +57,7 @@ def main_load():
                 
                 else:
                     print(f"Skipping file (missing file ID): {file_name}")
+            
             # If it's a folder (t > 0), recursively call the function to explore its contents
             elif file['t'] > 0:  # It's a folder
                 print(f"{i}/{l} : Entering folder: {file_name}")
