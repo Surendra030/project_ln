@@ -44,7 +44,7 @@ def download_file(m, folder_name, file_name):
         if not folder:
             print(f"Folder '{folder_name}' not found.")
             return None
-
+        print(folder)
         # Find the file in the folder
         file = next(
             (item for item in all_folders.values() if item['a']['n'] == file_name and item['p'] == folder['h']),
