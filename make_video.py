@@ -128,7 +128,8 @@ def upload_mega(o_path):
     folder = m.create_folder(title)
     print(folder)
     folder_handler = folder.get(title)
-    m.upload(o_path, folder_handler)
+    r = m.upload(o_path, folder_handler)
+    print(folder_handler,"\n",r)
     print("Uploading completed.")
 
 
