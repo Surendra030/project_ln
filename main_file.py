@@ -40,12 +40,13 @@ def download_file(m, file_name):
             None
         )
         print(file)
+        file_link = m.export(file)
         if not file:
             print(f"Folder '{file_name}' not found.")
             return None
 
         print(f"Folder '{file_name}' found. Listing all files in this folder:")
-        m.download(file,file_name)
+        m.download(file_link)
         
         return file_name
 
