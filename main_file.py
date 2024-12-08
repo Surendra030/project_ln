@@ -11,8 +11,8 @@ import re
 url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
 
 data = main(url)
-sindex = 21
-eindex = 31
+sindex = 31
+eindex = 41
 data = [
     {**i, 'serial_num': idx}  # Add the 'serial_num' label starting from sindex
     for idx, i in enumerate(data, start=sindex)  # Start enumerate from sindex
