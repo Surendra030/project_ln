@@ -16,5 +16,5 @@ def login_part(mega):
         return None
     
 m = login_part(mega)
-file = m.download("https://mega.nz/file/IkJ1SLLZ#CKqnm1gBvdgUJxMs6YmiP19X7iDXPMaR7wgQhNWu2T4")
+file = m.download_url("https://mega.nz/file/IkJ1SLLZ#CKqnm1gBvdgUJxMs6YmiP19X7iDXPMaR7wgQhNWu2T4")
 print(file)
