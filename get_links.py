@@ -96,10 +96,9 @@ def main_load(title):
     with open(f'{title}.json', 'w') as json_file:
         json.dump(file_links, json_file, indent=4)
     
-    folder_dict = m.get_files()
     folder_name = 'meta_data'
     
-    folder = [item for item in folder_dict.values() if item['t'] >0 and item ['a']['n'] == folder_name]
+    folder = [item for item in files.values() if item['t'] >0 and item ['a']['n'] == folder_name]
     folder_handle = folder[0]["h"]
     file = m.upload(f"{title}.json",folder_handle)
     

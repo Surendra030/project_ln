@@ -5,158 +5,116 @@ from save_img_pdf import main_pdf
 from make_video import start
 from get_links import main_load
 from mega import Mega
+from pymongo import MongoClient
 import os
 import re
 import json
 
-# mega = Mega()
+mega = Mega()
 
-# def login_part(mega):
-#     """Login to Mega using environment variables."""
-#     try:
-#         print("Logging in to Mega...")
-#         keys = os.getenv("M_TOKEN")
-#         if not keys:
-#             raise ValueError("Mega credentials are not set in environment variables.")
+def login_part(mega):
+    """Login to Mega using environment variables."""
+    try:
+        print("Logging in to Mega...")
+        keys = os.getenv("M_TOKEN")
+        if not keys:
+            raise ValueError("Mega credentials are not set in environment variables.")
         
-#         keys = keys.split("_")
-#         if len(keys) != 2:
-#             raise ValueError("Mega credentials are incorrectly formatted in environment variables.")
+        keys = keys.split("_")
+        if len(keys) != 2:
+            raise ValueError("Mega credentials are incorrectly formatted in environment variables.")
         
-#         m = mega.login(keys[0], keys[1])
-#         print("Logged in to Mega successfully.")
-#         return m
-#     except Exception as e:
-#         print(f"Error during Mega login: {e}")
-#         return None
+        m = mega.login(keys[0], keys[1])
+        print("Logged in to Mega successfully.")
+        return m
+    except Exception as e:
+        print(f"Error during Mega login: {e}")
+        return None
 
-# def download_file(m, file_name):
-#     try:
-
+def download_file(m,file_links):
+    try:
+        [json_links,audio_file] = file_links
+        file_obj = m.download(json_links)
         
-#         file_link = m.export(file_name)
-#         print(file_link)
-#         print(f"Folder '{file_name}' found. Listing all files in this folder:")
-#         m.download(file_link)
         
-#         return file_name
+        print(file_obj)
+    except Exception as e:
+        print(f"Error downloading file '{file_name}': {e}")
+        return None
 
-#     except Exception as e:
-#         print(f"Error downloading file '{file_name}': {e}")
-#         return None
-
-# def process_links(m, links_data, audio_file):
-#     """Process the links data."""
-#     try:
-#         if not m:
-#             raise ConnectionError("Mega instance is not initialized.")
+def process_links(m, links_data, audio_file):
+    """Process the links data."""
+    try:
+        if not m:
+            raise ConnectionError("Mega instance is not initialized.")
         
-#         print(f"Processing {len(links_data)} links...")
-#         for key, snippet in links_data.items():
-#             file_name = snippet.get("file_name", "No file_name found")
-#             link = snippet.get("sharable_link", "No link available")
+        print(f"Processing {len(links_data)} links...")
+        for key, snippet in links_data.items():
+            file_name = snippet.get("file_name", "No file_name found")
+            link = snippet.get("sharable_link", "No link available")
             
-#             exten = file_name.split(".")[-1]
-#             output_path = file_name.split(".")[0]
-#             main_folder_name = output_path.split("_")[1] if "_" in output_path else "default_folder"
+            exten = file_name.split(".")[-1]
+            output_path = file_name.split(".")[0]
+            main_folder_name = output_path.split("_")[1] if "_" in output_path else "default_folder"
             
-#             print(f"Processing file: {file_name}, Type: {exten}")
+            print(f"Processing file: {file_name}, Type: {exten}")
             
-#             if exten == 'pdf' and "compress" not in output_path:
-#                 print(f"Starting video creation for {file_name}...")
-#                 start(link,file_name, audio_file, output_path, main_folder_name)
-#             else:
-#                 print(f"Skipping file: {file_name}, as it does not meet criteria.")
+            if exten == 'pdf' and "compress" not in output_path:
+                print(f"Starting video creation for {file_name}...")
+                start(link,file_name, audio_file, output_path, main_folder_name)
+            else:
+                print(f"Skipping file: {file_name}, as it does not meet criteria.")
     
     
-#     except Exception as e:
-#         print(f"Error processing links: {e}")
+    except Exception as e:
+        print(f"Error processing links: {e}")
 
-# def main():
-#     """Main function to execute the workflow."""
-#     file_name = "file_links.json"
-#     audio_file = "audio.mp3"
+def get_shrable_links_db():
+    mongo_url = os.getenv("MONGO_URL")
+    client = MongoClient(mongo_url)
+    db = client["file_links"]
+    coll = db['links_coll']
+    json_file_link = coll.find_one({"novel_title":"jobless_links"})
+    audio_file_link = coll.find_one({"file_name":"audio.mp3"})
+    # Fetch sharable links for specific documents
+    json_file_link = coll.find_one({"novel_title": "jobless_links"}, {"_id": 0, "sharable_link": 1})
+    audio_file_link = coll.find_one({"file_name": "audio.mp3"}, {"_id": 0, "sharable_link": 1})
 
-#     # Login to Mega
-#     m = login_part(mega)
-#     if not m:
-#         print("Failed to log in to Mega. Exiting.")
-#         return
+    # Extracting only the links
+    json_sharable_link = json_file_link.get("sharable_link") if json_file_link else None
+    audio_sharable_link = audio_file_link.get("sharable_link") if audio_file_link else None
 
-#     # Download required files
-#     downloaded_file = download_file(m, file_name)
-#     downloaded_audio = download_file(m, audio_file)
+    return [json_sharable_link,audio_sharable_link]
 
-#     if not downloaded_file or not downloaded_audio:
-#         print("Required files are missing. Exiting.")
-#         return
-
-#     # Load links data
-#     try:
-#         with open(downloaded_file, 'r', encoding='utf-8') as f:
-#             links_data = json.load(f)
-#         # Limit to a subset of data for testing
-#         links_data = {k: links_data[k] for k in list(links_data)[:2]}
-#     except Exception as e:
-#         print(f"Error reading links data: {e}")
-#         return
-
-#     # Process the links
-#     process_links(m, links_data, downloaded_audio)
-
-# if __name__ == "__main__":
-#     main()
-
-
-
-# url = "https://anyflip.com/explore?q=Jobless%20reincarnation"
-
-# data = main_books_fun(url)
-
-
-
-
-
-
-# sindex=61
-# eindex=71
-
-target_name = "jobless"
-# data = [
-#     {**i, 'serial_num': idx}  # Add the 'serial_num' label starting from sindex
-#     for idx, i in enumerate(data, start=sindex)  # Start enumerate from sindex
-#     if target_name in i['title'].lower()  # Filter for "jobless" in title
-# ]
-
-
-# data = data[sindex:eindex]
-# constructed_urls = []
-
-# def sanitize_title(title):
+def main():
+    """Main function to execute the workflow."""
     
-    
-#     # Replace any non-alphanumeric character with an underscore
-#     sanitized = re.sub(r'[^\w\s]', '_', title)
-#     # Replace any whitespace with an underscore
-#     sanitized = re.sub(r'\s+', '_', sanitized)
-#     return sanitized
+    # Login to Mega
+    links = get_shrable_links_db()
+    m = login_part(mega)
+    if not m:
+        print("Failed to log in to Mega. Exiting.")
+        return
 
-# for index,entity_obj in enumerate(data):
-#     # Extract the last two segments from the href
-#     parts = entity_obj['href'].split('/')
-#     if len(parts) > 3:
-#         base_code = parts[-3]  # Second-to-last segment
-#         sub_code = parts[-2]  # Last segment
-#         # Construct the new URL
-#         new_url = f"https://online.anyflip.com/{base_code}/{sub_code}/mobile/index.html"
-#         entity_obj['href'] = new_url
+    # Download required files
+    downloaded_files = download_file(m,links)
 
-# for index,obj in enumerate(data):
-#     img_url_data = get_images_urls(obj['href'])
-#     #saving pdf file to cloud
-#     temp_title = f"{obj['serial_num']}_{obj['title']}"
-#     title = sanitize_title(temp_title)
+    # # if not downloaded_file or not downloaded_audio:
+    #     print("Required files are missing. Exiting.")
+    #     return
 
-#     main_pdf(img_url_data,title)
-main_load(target_name)
+    # # Load links data
+    # try:
+    #     with open(downloaded_file, 'r', encoding='utf-8') as f:
+    #         links_data = json.load(f)
+    #     # Limit to a subset of data for testing
+    #     links_data = {k: links_data[k] for k in list(links_data)[:2]}
+    # except Exception as e:
+    #     print(f"Error reading links data: {e}")
+    #     return
 
+    # # Process the links
+    # # process_links(m, links_data, downloaded_audio)
+
+if __name__ == "__main__":
+    main()
