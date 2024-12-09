@@ -125,7 +125,7 @@ def upload_mega(m,output_file_path, folder_title):
             
         
         folder_handler = get_or_create_folder(m,all_folders, folder_title)
-        m.upload(output_file_path,folder_handle)
+        m.upload(output_file_path,folder_handler)
         print("Upload completed successfully.")
     
     except Exception as e:
