@@ -50,7 +50,7 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
             image.save(image_name, 'JPEG')
 
             # Add the image as a video frame with duration
-            clip = ImageClip(image_name).duration(page_duration)
+            clip = ImageClip(image_name).with_duration(page_duration)
             image_clips.append(clip)
 
             # Clean up the temporary image file

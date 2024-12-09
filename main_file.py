@@ -61,9 +61,7 @@ def process_links(m,mega, links_data, audio_file):
             
             if exten == 'pdf' and "compress"  in output_path:
                 start(link, audio_file, output_path, main_folder_name)
-            else:
-                print(f"Skipping file: {file_name}, as it does not meet criteria.")
-    
+            
     
     except Exception as e:
         print(f"Error processing links: {e}")
