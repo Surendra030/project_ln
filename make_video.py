@@ -94,8 +94,10 @@ def get_or_create_folder(m,all_folders, title):
         print(f"Checking for the existence of the folder '{title}'...")
 
         folder_handler = next(
-            (folder for folder in all_folders.values() if folder['a']['n'] == title and folder['t'] == 1), None
+            (folder['h'] for folder in all_folders.values() if folder['a']['n'] == title and folder['t'] == 1),
+            None
         )
+
 
         if folder_handler:
             print(f"Folder '{title}' already exists. Using the existing folder.")
@@ -123,8 +125,7 @@ def upload_mega(m,output_file_path, folder_title):
             
         
         folder_handler = get_or_create_folder(m,all_folders, folder_title)
-        print(os.listdir(),"\n",folder_handler)
-        m.upload(output_file_path)
+        m.upload(output_file_path,folder_handle)
         print("Upload completed successfully.")
     
     except Exception as e:
