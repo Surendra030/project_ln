@@ -21,15 +21,15 @@ jobs:
         with:
           python-version: '3.10'  # Use Python 3.10 for compatibility
       
-      - name: Install Ghostscript
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ghostscript
+      # - name: Install Ghostscript
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y ghostscript
       
       # Step 3: Install dependencies
       - name: Install dependencies
         run: |
-          sudo apt-get install -y poppler-utils
+          # sudo apt-get install -y poppler-utils
 
           python -m pip install --upgrade pip
           pip install pymongo pikepdf pdf2image moviepy requests Pillow fpdf mega.py selenium  python-dotenv  reportlab
