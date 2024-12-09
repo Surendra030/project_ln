@@ -33,7 +33,9 @@ def login_part(mega):
 
 def download_file(m,file_links):
     try:
-        [json_links,audio_file] = file_links
+        json_links = file_links[0]
+        print(file_links,json_links)
+
         file_obj = m.download(json_links)
         
         
