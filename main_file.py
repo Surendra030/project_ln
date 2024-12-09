@@ -50,7 +50,6 @@ def process_links(m,mega, links_data, audio_file):
             m = login_part(mega)
 
         
-        print(f"Processing {len(links_data)} links...")
         for key, snippet in links_data.items():
             file_name = snippet.get("file_name", "No file_name found")
             link = snippet.get("sharable_link", "No link available")
