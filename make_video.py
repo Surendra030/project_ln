@@ -143,7 +143,7 @@ def start(m,pdf_url, audio_path, output_path, main_folder_path):
         return
 
     
-
+    output_path = f"{output_path}.mp4"
     # Create the video
     output_path = pdf_to_video(pdf_path, audio_path, output_path)
 
