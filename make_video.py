@@ -129,7 +129,7 @@ def upload_mega(output_file_path, folder_title):
     except Exception as e:
         print(f"Error uploading file: {e}")
 
-def start(pdf_url, audio_url, output_path, main_folder_path):
+def start(pdf_url, audio_path, output_path, main_folder_path):
     print("Starting process...")
 
     # Login to Mega
@@ -144,11 +144,7 @@ def start(pdf_url, audio_url, output_path, main_folder_path):
         print("Failed to download PDF. Exiting process.")
         return
 
-    # Download the audio file
-    audio_path = download_file(m, audio_url)
-    if not audio_path:
-        print("Failed to download audio. Exiting process.")
-        return
+    
 
     # Create the video
     output_path = pdf_to_video(pdf_path, audio_path, output_path)
