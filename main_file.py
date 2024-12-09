@@ -108,8 +108,6 @@ def main():
     try:
         with open(downloaded_files_name[0], 'r', encoding='utf-8') as f:
             links_data = json.load(f)
-            links_data = links_data[:2]
-            print(links_data)
         # Limit to a subset of data for testing
         links_data = {k: links_data[k] for k in list(links_data)[:2]}
     except Exception as e:
