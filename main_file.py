@@ -48,7 +48,7 @@ def process_links(m,mega, links_data, audio_file):
     try:
         if not m:
             m = login_part(mega)
-            
+
         
         for key, snippet in links_data.items():
             file_name = snippet.get("file_name", "No file_name found")
@@ -60,7 +60,6 @@ def process_links(m,mega, links_data, audio_file):
             
             
             if exten == 'pdf' and "compress"  in output_path:
-                print(link, audio_file, output_path, main_folder_name)
                 start(link, audio_file, output_path, main_folder_name)
             else:
                 print(f"Skipping file: {file_name}, as it does not meet criteria.")
