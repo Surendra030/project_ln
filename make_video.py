@@ -118,16 +118,19 @@ def upload_mega(m,output_file_path, folder_title):
         
         all_folders = m.get_files()
 
-        if not m:
-            m = login_part()    
-            return
+        
+        m = login_part()    
+            
         
         folder_handler = get_or_create_folder(m,all_folders, folder_title)
+        print(os.listdir())
         m.upload(output_file_path, folder_handler)
         print("Upload completed successfully.")
+    
     except Exception as e:
         print(f"Error uploading file: {e}")
-
+    finally:
+        os.remove(output_file_path)
 def start(m,pdf_url, audio_path, output_path, main_folder_path):
     print("Starting process...")
 
