@@ -60,7 +60,7 @@ def process_links(m,mega, links_data, audio_file):
             
             
             if exten == 'pdf' and "compress"  in output_path:
-                start(link, audio_file, output_path, main_folder_name)
+                start(m,link, audio_file, output_path, main_folder_name)
             
     
     except Exception as e:

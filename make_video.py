@@ -80,7 +80,7 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
 
         # Write the video to the output path
         print(f"Writing the video to {output_path}...")
-        final_video.write_videofile(output_path, fps=24)
+        final_video.write_videofile(output_path, fps=24,codec="libx264")
         print(f"Video created successfully: {output_path}")
         
         return output_path
@@ -111,15 +111,15 @@ def get_or_create_folder(m,all_folders, title):
         print(f"An error occurred while handling the folder: {e}")
         return None
 
-def upload_mega(output_file_path, folder_title):
+def upload_mega(m,output_file_path, folder_title):
     """Upload a video file to Mega."""
     print(f"Uploading video to Mega: {output_file_path}")
     try:
-        m = login_part()
+        
         all_folders = m.get_files()
 
         if not m:
-            print("Failed to log in to Mega. Aborting upload.")
+            m = login_part()    
             return
         
         folder_handler = get_or_create_folder(m,all_folders, folder_title)
@@ -128,13 +128,12 @@ def upload_mega(output_file_path, folder_title):
     except Exception as e:
         print(f"Error uploading file: {e}")
 
-def start(pdf_url, audio_path, output_path, main_folder_path):
+def start(m,pdf_url, audio_path, output_path, main_folder_path):
     print("Starting process...")
 
     # Login to Mega
-    m = login_part()
     if not m:
-        print("Failed to log in to Mega. Exiting process.")
+        m = login_part()
         return
 
     # Download the PDF file
@@ -149,5 +148,5 @@ def start(pdf_url, audio_path, output_path, main_folder_path):
     output_path = pdf_to_video(pdf_path, audio_path, output_path)
 
     # Optionally upload to Mega
-    upload_mega(output_path, main_folder_path)
+    upload_mega(m,output_path, main_folder_path)
 
