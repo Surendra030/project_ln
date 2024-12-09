@@ -68,10 +68,10 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
             audio_clip.subclipped(i * audio_duration, (i + 1) * audio_duration)
             for i in range(len(image_clips))
         ]
-
+        
         # Associate each image clip with the corresponding audio interval
         video_clips = [
-            clip.set_audio(audio_intervals[i]) for i, clip in enumerate(image_clips)
+            clip.with_volume_scaled(audio_intervals[i]) for i, clip in enumerate(image_clips)
         ]
 
         # Concatenate the clips
