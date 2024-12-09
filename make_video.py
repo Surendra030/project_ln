@@ -24,11 +24,12 @@ def login_part():
         print(f"Error during login: {e}")
         return None
 
-def download_file(m, url, output_name):
+def download_file(m, url):
     """Download a file from Mega by URL."""
     try:
-        m.download(url,output_name)
+        output_name = m.download_url(url)
         return output_name
+
     except Exception as e:
         print(f"Error downloading file: {e}")
         return None
@@ -45,7 +46,6 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
         # Prepare image clips
         image_clips = []
         for page_number, image in enumerate(images):
-            print(f"Processing page {page_number + 1} of {total_pages}...")
             image_name = f"page_{page_number + 1}.jpg"
             image.save(image_name, 'JPEG')
 
@@ -55,7 +55,6 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
 
             # Clean up the temporary image file
             os.remove(image_name)
-            print(f"Processed page {page_number + 1} of {total_pages}.")
 
         # Load the audio file
         print(f"Loading audio from {audio_path}...")
@@ -83,15 +82,16 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
         print(f"Writing the video to {output_path}...")
         final_video.write_videofile(output_path, fps=24)
         print(f"Video created successfully: {output_path}")
-
+        
+        return output_path
+    
     except Exception as e:
         print(f"An error occurred during processing: {e}")
 
-def get_or_create_folder(m, title):
+def get_or_create_folder(m,all_folders, title):
     """Retrieve an existing folder by title or create a new one."""
     try:
         print(f"Checking for the existence of the folder '{title}'...")
-        all_folders = m.get_files()
 
         folder_handler = next(
             (folder for folder in all_folders.values() if folder['a']['n'] == title and folder['t'] == 1), None
@@ -111,22 +111,24 @@ def get_or_create_folder(m, title):
         print(f"An error occurred while handling the folder: {e}")
         return None
 
-def upload_mega(o_path, folder_title):
+def upload_mega(output_file_path, folder_title):
     """Upload a video file to Mega."""
-    print(f"Uploading video to Mega: {o_path}")
+    print(f"Uploading video to Mega: {output_file_path}")
     try:
         m = login_part()
+        all_folders = m.get_files()
+
         if not m:
             print("Failed to log in to Mega. Aborting upload.")
             return
         
-        folder_handler = get_or_create_folder(m, folder_title)
-        m.upload(o_path, folder_handler)
+        folder_handler = get_or_create_folder(m,all_folders, folder_title)
+        m.upload(output_file_path, folder_handler)
         print("Upload completed successfully.")
     except Exception as e:
         print(f"Error uploading file: {e}")
 
-def start(pdf_url,file_name, audio_url, output_path, main_folder_path):
+def start(pdf_url, audio_url, output_path, main_folder_path):
     print("Starting process...")
 
     # Login to Mega
@@ -136,19 +138,19 @@ def start(pdf_url,file_name, audio_url, output_path, main_folder_path):
         return
 
     # Download the PDF file
-    pdf_path = download_file(m, pdf_url, file_name)
+    pdf_path = download_file(m, pdf_url)
     if not pdf_path:
         print("Failed to download PDF. Exiting process.")
         return
 
     # Download the audio file
-    audio_path = download_file(m, audio_url, "audio.mp3")
+    audio_path = download_file(m, audio_url)
     if not audio_path:
         print("Failed to download audio. Exiting process.")
         return
 
     # Create the video
-    pdf_to_video(pdf_path, audio_path, output_path)
+    output_path = pdf_to_video(pdf_path, audio_path, output_path)
 
     # Optionally upload to Mega
     upload_mega(output_path, main_folder_path)
