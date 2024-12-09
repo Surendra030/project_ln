@@ -27,8 +27,8 @@ def login_part():
 def download_file(m, url):
     """Download a file from Mega by URL."""
     try:
-        print(url)
         output_name = m.download_url(url)
+        print(output_name,"\n",os.listdir())
         return output_name
 
     except Exception as e:
