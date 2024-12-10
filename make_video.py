@@ -43,7 +43,7 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
         print(f"Converting PDF to images from {pdf_path}...")
         images = convert_from_path(pdf_path)
         total_pages = len(images)
-        total_pages = 11
+        total_pages = 25
         print(f"Processing {total_pages} pages from the PDF.")
 
         # Save images to disk temporarily
