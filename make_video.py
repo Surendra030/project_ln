@@ -2,6 +2,8 @@ import os
 from mega import Mega
 from moviepy.video.VideoClip import ImageClip
 from moviepy import concatenate_videoclips, AudioFileClip
+from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
+from moviepy.audio.io.AudioFileClip import AudioFileClip
 from pdf2image import convert_from_path
 
 def login_part():
@@ -41,53 +43,40 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
         print(f"Converting PDF to images from {pdf_path}...")
         images = convert_from_path(pdf_path)
         total_pages = len(images)
+        total_pages = 11
         print(f"Processing {total_pages} pages from the PDF.")
 
-        # Prepare image clips
-        image_clips = []
+        # Save images to disk temporarily
+        temp_image_files = []
         for page_number, image in enumerate(images):
             image_name = f"page_{page_number + 1}.jpg"
             image.save(image_name, 'JPEG')
+            temp_image_files.append(image_name)
 
-            # Add the image as a video frame with duration
-            clip = ImageClip(image_name).with_duration(page_duration)
-            image_clips.append(clip)
-
-            # Clean up the temporary image file
-            os.remove(image_name)
+        # Create a video clip from the image sequence
+        print("Creating video from image sequence...")
+        video_clip = ImageSequenceClip(temp_image_files, fps=1 / page_duration)
 
         # Load the audio file
         print(f"Loading audio from {audio_path}...")
         audio_clip = AudioFileClip(audio_path)
 
-        # Split audio to match page durations
-        audio_duration = audio_clip.duration / len(image_clips)
-        print(f"Audio duration per page: {audio_duration:.2f} seconds.")
+        # Ensure the audio matches the total video duration
+        video_clip = video_clip.set_audio(audio_clip.subclip(0, video_clip.duration))
 
-        audio_intervals = [
-            audio_clip.subclipped(i * audio_duration, (i + 1) * audio_duration)
-            for i in range(len(image_clips))
-        ]
-        
-        # Associate each image clip with the corresponding audio interval
-        video_clips = [
-            clip.with_volume_scaled(audio_intervals[i]) for i, clip in enumerate(image_clips)
-        ]
-
-        # Concatenate the clips
-        print("Concatenating video clips...")
-        final_video = concatenate_videoclips(video_clips, method="compose")
-
-        # Write the video to the output path
+        # Write the video file
         print(f"Writing the video to {output_path}...")
-        final_video.write_videofile(output_path, fps=24,codec="libx264")
-        print(f"Video created successfully: {output_path}")
-        
-        return output_path
-    
-    except Exception as e:
-        print(f"An error occurred during processing: {e}")
+        video_clip.write_videofile(output_path, fps=24, codec="libx264", audio_codec="aac")
 
+        # Clean up temporary image files
+        for temp_file in temp_image_files:
+            os.remove(temp_file)
+
+        print(f"Video created successfully: {output_path}")
+        return output_path
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 def get_or_create_folder(m,all_folders, title):
     """Retrieve an existing folder by title or create a new one."""
     try:
