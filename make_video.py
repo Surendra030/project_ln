@@ -62,7 +62,7 @@ def pdf_to_video(pdf_path, audio_path, output_path, page_duration=10):
         audio_clip = AudioFileClip(audio_path)
 
         # Ensure the audio matches the total video duration
-        video_clip = video_clip.set_audio(audio_clip.subclip(0, video_clip.duration))
+        video_clip = video_clip.with_audio(audio_clip.subclipped(0, video_clip.duration))
 
         # Write the video file
         print(f"Writing the video to {output_path}...")
