@@ -32,20 +32,20 @@ def login_part(mega):
         return None
 
 def download_file(m,file_links):
-    try:
-        
-        if len(file_links) >1:
-            print(m)
+    if len(file_links) >1:
+        try:
             file_name = m.download_url(file_links[0])
             audio_file_name = m.download_url(file_links[1])
             return [file_name,audio_file_name]
-        else:
-            file_name = m.download_url(file_links[0])
+        except Exception as e:
+            print("Error downloading meta data :",e)
+    else:
+        try:
+            file_name = m.download_url(file_links)
+        except Exception as e:
+            print("Error downloading Key files : ",e)
 
 
-    except Exception as e:
-        print(f"Error downloading file : {e}")
-        return None
 
 
 def save_links_to_db(lst,collection_name):
