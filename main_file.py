@@ -48,6 +48,17 @@ def download_file(m,file_links):
             print(f"Error downloading Key files : {file_links}\n",e)
 
 
+def download_pdf_file(m,file_link):
+    
+    if file_link:
+        try:
+            
+            file_name = m.download_url(file_link)
+            return file_name
+        except Exception as e:
+            print(f"Error downloading Key files : {file_links}\n",e)
+
+
 
 
 def save_links_to_db(lst,collection_name):
@@ -77,7 +88,7 @@ def process_links(m,mega, links_data, audio_file_name):
             
             try:
                 if link:
-                    pdf_file_name = download_file(m,link)
+                    pdf_file_name = download_pdf_file(m,link)
             except Exception as e:
                 print(f"Downloading failed for pdf file : {pdf_file_name}\n",e)  
             
