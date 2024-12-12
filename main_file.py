@@ -172,7 +172,7 @@ def main():
         with open(downloaded_files_name[0], 'r', encoding='utf-8') as f:
             links_data = json.load(f)
         # Limit to a subset of data for testing
-        links_data = {k: links_data[k] for k in list(links_data)[:3]}
+        links_data = {k: links_data[k] for k in list(links_data)[:23]}
     except Exception as e:
         print(f"Error reading links data: {e}")
         return
@@ -180,12 +180,14 @@ def main():
     # Process the links
     videos_data = process_links(m,mega, links_data, downloaded_files_name[1])
 
-    if videos_data:
-        try:
+    if videos_data : print("All Pdf's converted to Videos")
 
-            save_links_to_db(videos_data[0],videos_data[1])
-        except Exception as e:
-            print("Error saving data to DB.",e) 
+    # if videos_data:
+    #     try:
+
+    #         save_links_to_db(videos_data[0],videos_data[1])
+    #     except Exception as e:
+    #         print("Error saving data to DB.",e) 
 
 if __name__ == "__main__":
     main()
