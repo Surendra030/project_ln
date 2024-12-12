@@ -66,7 +66,7 @@ def get_or_create_folder(m,all_folders= None, main_folder_name = None):
 def upload_to_mega(file_path,main_folder):
     m = login_part()
     all_folders = m.get_files()
-
+ 
     try:
         folder_handle = get_or_create_folder(m,all_folders,main_folder)
         
