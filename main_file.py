@@ -32,7 +32,8 @@ def login_part(mega):
         return None
 
 def download_file(m,file_links):
-    if len(file_links) >1:
+
+    if type(file_links) == list:
         try:
             file_name = m.download_url(file_links[0])
             audio_file_name = m.download_url(file_links[1])
@@ -41,9 +42,10 @@ def download_file(m,file_links):
             print("Error downloading meta data :",e)
     else:
         try:
+            
             file_name = m.download_url(file_links)
         except Exception as e:
-            print("Error downloading Key files : ",e)
+            print(f"Error downloading Key files : {file_links}\n",e)
 
 
 
@@ -122,18 +124,19 @@ def main():
     
     # Login to Mega
     file_links = get_shrable_links_db()
-    print(file_links)
     m = login_part(mega)
     if not m:
         print("Failed to log in to Mega. Exiting.")
         return
 
-    # Download required files
+    # Download required meta files
     downloaded_files_name = download_file(m,file_links)
 
     if not downloaded_files_name:
-        print("Required files are missing. Exiting.")
+        print("Required files are missing.")
         return
+    else:
+        print("Required files are Available.")
 
     # Load links data
     try:
