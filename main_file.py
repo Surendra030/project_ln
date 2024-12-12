@@ -67,10 +67,13 @@ def save_links_to_db(lst,collection_name):
     client = MongoClient(mongourl)
     db = client['file_links']
     collection = db[collection_name]
+    
     if lst:
-        collection.insert_many(lst)
-        print(f"Successfully inserted {len(lst)} documents into the collection.")
-
+        try:
+            collection.insert_many(lst)
+            print(f"Successfully inserted {len(lst)} documents into the collection.")
+        except Exception as e:
+            print("Error uploading file to db.")
     else:
         print("No data to insert")
 
@@ -103,7 +106,6 @@ def process_links(m,mega, links_data, audio_file_name):
                 
                 if exten == 'pdf' and "compress"  in output_path:
                     video_file_data_obj = make_video_and_give_link(pdf_file_name,audio_file_name,output_path,main_folder_name)
-                    print(video_file_data_obj)
                     if video_file_data_obj: video_files_data.append(video_file_data_obj)
             else:
                 print(f"pdf file not found : {pdf_file_name}")
@@ -173,7 +175,7 @@ def main():
 
             save_links_to_db(videos_data[0],videos_data[1])
         except Exception as e:
-            print("Error saving data to DB.") 
+            print("Error saving data to DB.",e) 
 
 if __name__ == "__main__":
     main()
