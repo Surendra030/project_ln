@@ -136,7 +136,7 @@ def main():
         print("Required files are missing.")
         return
     else:
-        print("Required files are Available.")
+        print("Required files are Available.",downloaded_files_name)
 
     # Load links data
     try:
