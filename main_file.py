@@ -79,7 +79,7 @@ def process_links(m,mega, links_data, audio_file_name):
                 if link:
                     pdf_file_name = download_file(m,link)
             except Exception as e:
-                print("Downloading failed for pdf file :",e)  
+                print(f"Downloading failed for pdf file : {pdf_file_name}\n",e)  
             
             if pdf_file_name:
                 exten = file_name.split(".")[-1]
