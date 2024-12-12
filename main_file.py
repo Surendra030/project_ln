@@ -64,10 +64,14 @@ def download_pdf_file(m,file_link):
 def save_links_to_db(lst,collection_name):
     collection_name = f"{collection_name}_video_links"
     mongourl = os.getenv("MONGO_URL")
-    client = MongoClient(mongourl)
+    try:
+        client = MongoClient(mongourl)
+    except Exception as e:
+        print("Error connecting to db.")
+    
     db = client['file_links']
     collection = db[collection_name]
-    
+
     if lst:
         try:
             collection.insert_many(lst)
@@ -135,7 +139,13 @@ def get_shrable_links_db():
     # Extracting only the links
     json_sharable_link = json_file_link.get("sharable_link") if json_file_link else None
     audio_sharable_link = audio_file_link.get("sharable_link") if audio_file_link else None
-
+    
+    try:
+    # Closing Connection
+        client.close()
+    except Exception as e:
+        print("Error trying to close connection.")
+    
     return [json_sharable_link,audio_sharable_link]
 
 def main():
