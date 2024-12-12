@@ -103,6 +103,7 @@ def process_links(m,mega, links_data, audio_file_name):
                 
                 if exten == 'pdf' and "compress"  in output_path:
                     video_file_data_obj = make_video_and_give_link(pdf_file_name,audio_file_name,output_path,main_folder_name)
+                    print(video_file_data_obj)
                     if video_file_data_obj: video_files_data.append(video_file_data_obj)
             else:
                 print(f"pdf file not found : {pdf_file_name}")
