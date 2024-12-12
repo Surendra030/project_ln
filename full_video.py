@@ -33,14 +33,15 @@ def get_or_create_folder(m,all_folders, main_folder_name):
         print(f"Checking for the existence of the folder '{main_folder_name}'...")
 
         folder_handler = next(
-            (folder['h'] for folder in all_folders.values() if folder['a']['n'] == main_folder_name and folder['t'] == 1),
+            (folder for folder in all_folders.values() if folder['a']['n'] == main_folder_name and folder['t'] == 1),
             None
         )
 
 
         if folder_handler:
-            print(f"Folder '{main_folder_name}' already exists. Using the existing folder.")
-            return folder_handler
+            print(f"Folder '{folder_handler['a']['n']} - ' already exists. Using the existing folder.")
+            return folder_handler['h']
+        
         else:
             print(f"Folder '{main_folder_name}' does not exist. Creating a new folder...")
             folder = m.create_folder(main_folder_name)

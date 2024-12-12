@@ -45,7 +45,7 @@ def download_file(m,file_links):
             
             file_name = m.download_url(file_links)
         except Exception as e:
-            print(f"Error downloading Key files : {file_links}\n",e)
+            print(f"Error downloading Key files : ",e)
 
 
 def download_pdf_file(m,file_link):
@@ -56,7 +56,7 @@ def download_pdf_file(m,file_link):
             file_name = m.download_url(file_link)
             return file_name
         except Exception as e:
-            print(f"Error downloading Key files : {file_links}\n",e)
+            print(f"Error downloading Key files : \n",e)
 
 
 
