@@ -64,33 +64,66 @@ def process_links(m,mega, links_data, audio_file_name):
     """Process the links data."""
 
     video_files_data = []
+
     try:
         if not m:
-            m = login_part(mega)
+            try:
+                m = login_part(mega)
+                print("Successfully logged into Mega.")
+            except Exception as e:
+                print(f"Error logging into Mega: {e}")
+                raise
 
         o_path = ""
-        for key, snippet in links_data.items():
-            file_name = snippet.get("file_name", "No file_name found")
-            link = snippet.get("sharable_link", "No link available")
-            
-            if link:
-                link_lst = [link]
-                pdf_file_name = download_file(m,link_lst)
-            
-            exten = file_name.split(".")[-1]
-            output_path = file_name.split(".")[0]
-            o_path  = output_path
-            main_folder_name = output_path.split("_")[1] if "_" in output_path else "temp_folder"
-            
-            
-            if exten == 'pdf' and "compress"  in output_path:
-                video_file_data_obj = make_video_and_give_link(pdf_file_name,audio_file_name,output_path,main_folder_name)
-                if video_file_data_obj: video_files_data.append(video_file_data_obj)
 
-        save_links_to_db(video_files_data,o_path)
-            
+        for key, snippet in links_data.items():
+            try:
+                file_name = snippet.get("file_name", "No file_name found")
+                link = snippet.get("sharable_link", "No link available")
+
+                if not file_name or not link:
+                    print(f"Missing file_name or link for snippet {key}. Skipping...")
+                    continue
+
+                print(f"Processing file: {file_name} with link: {link}")
+
+                link_lst = [link]
+                pdf_file_name = None
+
+                try:
+                    pdf_file_name = download_file(m, link_lst)
+                    if not pdf_file_name:
+                        print(f"Download failed for link: {link}")
+                        continue
+                except Exception as e:
+                    print(f"Error downloading file from link {link}: {e}")
+                    continue
+
+                exten = file_name.split(".")[-1]
+                output_path = file_name.split(".")[0]
+                o_path = output_path
+                main_folder_name = output_path.split("_")[1] if "_" in output_path else "temp_folder"
+
+                if exten == 'pdf' and "compress" in output_path:
+                    try:
+                        video_file_data_obj = make_video_and_give_link(
+                            pdf_file_name, audio_file_name, output_path, main_folder_name
+                        )
+                        if video_file_data_obj:
+                            video_files_data.append(video_file_data_obj)
+                    except Exception as e:
+                        print(f"Error processing PDF for video generation: {e}")
+            except Exception as e:
+                print(f"Error processing snippet {key}: {e}")
+
+        try:
+            save_links_to_db(video_files_data, o_path)
+            print("Video file data saved to database successfully.")
+        except Exception as e:
+            print(f"Error saving links to database: {e}")
+
     except Exception as e:
-        print(f"Error processing links: {e}")
+        print(f"Critical error during processing: {e}")
 
 def get_shrable_links_db():
     mongo_url = os.getenv("MONGO_URL")
