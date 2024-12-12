@@ -73,6 +73,8 @@ def save_links_to_db(lst,collection_name):
 
     else:
         print("No data to insert")
+
+
 def process_links(m,mega, links_data, audio_file_name):
     """Process the links data."""
 
@@ -104,11 +106,14 @@ def process_links(m,mega, links_data, audio_file_name):
                     if video_file_data_obj: video_files_data.append(video_file_data_obj)
             else:
                 print(f"pdf file not found : {pdf_file_name}")
-        
-        save_links_to_db(video_files_data,o_path)
-            
+        if len(video_files_data) > 0:
+            return [video_files_data,o_path]
+        else:
+            print("Video files data is Empty.")
+
     except Exception as e:
         print(f"Error processing links: {e}")
+        
 
 def get_shrable_links_db():
     mongo_url = os.getenv("MONGO_URL")
@@ -160,7 +165,14 @@ def main():
         return
 
     # Process the links
-    process_links(m,mega, links_data, downloaded_files_name[1])
+    videos_data = process_links(m,mega, links_data, downloaded_files_name[1])
+
+    if videos_data:
+        try:
+
+            save_links_to_db(videos_data[0],videos_data[1])
+        except Exception as e:
+            print("Error saving data to DB.") 
 
 if __name__ == "__main__":
     main()
