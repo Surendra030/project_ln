@@ -172,7 +172,7 @@ def main():
         with open(downloaded_files_name[0], 'r', encoding='utf-8') as f:
             links_data = json.load(f)
         # Limit to a subset of data for testing
-        links_data = {k: links_data[k] for k in list(links_data)[46:]}
+        links_data = {k: links_data[k] for k in list(links_data)[71:101]}
     except Exception as e:
         print(f"Error reading links data: {e}")
         return
