@@ -39,6 +39,7 @@ def pdf_to_video(pdf_path, video_path, duration=10, fps=1):
     os.rmdir(img_folder)
     print(f"Video saved at: {video_path}")
     if os.path.exists(video_path):
+        os.remove(pdf_path)
         return True
     else:
         False

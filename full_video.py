@@ -81,6 +81,9 @@ def upload_to_mega(file_path,main_folder):
             file_obj = m.upload(file_path,folder_handle)
             file_link = m.get_upload_link(file_obj)
 
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
             return file_link
     
     except Exception as e:

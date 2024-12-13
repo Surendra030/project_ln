@@ -36,6 +36,7 @@ def add_audio_every_10_seconds(video_path, audio_path, output_path):
     final_video.write_videofile(output_path, codec="libx264")
     
     if os.path.exists(output_path):
+        os.remove(video_path)
         return True
     else:
         False
