@@ -28,11 +28,13 @@ def main_books_fun(url):
     # Infinite scroll logic
     previous_item_count = 0
 
-    while True:
+    # count = 1000 # In case for non-specified no of files.
+    count = 2
+    while count>=0:
         # Scroll down to the bottom of the page
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(5)  # Wait for new content to load
-
+        count -=1
         # Get the current count of water-items
         items = driver.find_elements(By.CSS_SELECTOR, ".water-item")
         current_item_count = len(items)
