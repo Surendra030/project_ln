@@ -27,7 +27,6 @@ data = [
 
 
 
-data = data[sindex:eindex]
 constructed_urls = []
 
 def sanitize_title(title):
