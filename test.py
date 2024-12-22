@@ -10,7 +10,7 @@ from get_img_id import get_images_urls
 from save_img_pdf import main_pdf
 from get_links import main_load
 
-url = 'https://anyflip.com/explore?q=Eminence%20in%20Shadow'
+url = 'https://anyflip.com/explore?q=Goblin%20Slayer%20Volume'
 
 data = main_books_fun(url)
 
@@ -18,7 +18,7 @@ data = main_books_fun(url)
 sindex=1
 eindex=71
 
-target_name = "Eminence in Shadow"
+target_name = "Goblin Slayer Volume"
 
 data = [
     {**i, 'serial_num': idx}  # Add the 'serial_num' label starting from sindex
