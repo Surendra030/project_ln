@@ -58,18 +58,20 @@ def main_books_fun(url):
             href = anchor_tag.get_attribute("href")
             title = image_tag.get_attribute("alt")
             
-            # Append the extracted data as a dictionary
+             #Append the extracted data as a dictionary
             extracted_data.append({
                 "href": href,
                 "title": title
             })
 
-            # Convert to a set of frozensets to deduplicate
-            unique_data = {frozenset(item.items()) for item in extracted_data}
+            # Deduplicate based on title
+            title_seen = set()
+            deduplicated_data = []
 
-            # Convert back to a list of dictionaries
-            deduplicated_data = [dict(item) for item in unique_data]
-
+            for item in extracted_data:
+                if item['title'] not in title_seen:
+                    title_seen.add(item['title'])
+                    deduplicated_data.append(item)
 
 
 
