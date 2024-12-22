@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import json
 import time
+import re
 
 # Set up Chrome options
 options = Options()
@@ -49,6 +50,13 @@ def main_books_fun(url):
     # Extract all items with the class "water-item"
     extracted_data = []
 
+    def extract_volume_number(title):
+        # Use a regex to find the pattern "volume <number>" or "vol <number>"
+        match = re.search(r'\bvol(?:ume)?\s*(\d+)', title, re.IGNORECASE)
+        if match:
+            return int(match.group(1))  # Extract the number as an integer
+        return None  # Return None if no match is found
+
     # Loop through each item and extract href and title
     for item in items:
         try:
@@ -69,7 +77,8 @@ def main_books_fun(url):
             deduplicated_data = []
 
             for item in extracted_data:
-                if item['title'] not in title_seen:
+                volume_num = extract_volume_number(item['title'])
+                if volume_num not in title_seen:
                     title_seen.add(item['title'])
                     deduplicated_data.append(item)
 
