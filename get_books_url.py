@@ -63,13 +63,23 @@ def main_books_fun(url):
                 "href": href,
                 "title": title
             })
+
+            # Convert to a set of frozensets to deduplicate
+            unique_data = {frozenset(item.items()) for item in extracted_data}
+
+            # Convert back to a list of dictionaries
+            deduplicated_data = [dict(item) for item in unique_data]
+
+
+
+
         except Exception as e:
             print(f"Error processing an item: {e}")
             continue
     print("data extracted from url..")
     driver.quit()
 
-    return extracted_data
+    return deduplicated_data
 
 
     

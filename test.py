@@ -19,13 +19,13 @@ sindex=1
 eindex=71
 
 target_name = "Eminence in Shadow"
+
 data = [
     {**i, 'serial_num': idx}  # Add the 'serial_num' label starting from sindex
     for idx, i in enumerate(data, start=sindex)  # Start enumerate from sindex
     if target_name.lower() in i['title'].lower()  # Filter for "jobless" in title
 ]
 
-print(data)
 
 constructed_urls = []
 
