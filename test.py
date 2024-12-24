@@ -10,7 +10,7 @@ from get_img_id import get_images_urls
 from save_img_pdf import main_pdf
 from get_links import main_load
 
-url = 'https://anyflip.com/explore?q=Goblin%20Slayer%20Volume'
+url = 'https://anyflip.com/explore?q=Mahouka%20Koukou%20no%20Rettousei'
 
 data = main_books_fun(url)
 
@@ -18,7 +18,7 @@ data = main_books_fun(url)
 sindex=1
 eindex=71
 
-target_name = "Goblin Slayer Volume"
+target_name = "Mahouka Koukou no Rettousei"
 
 data = [
     {**i, 'serial_num': idx}  # Add the 'serial_num' label starting from sindex

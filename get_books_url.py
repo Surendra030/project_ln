@@ -30,7 +30,7 @@ def main_books_fun(url):
     previous_item_count = 0
 
     # count = 1000 # In case for non-specified no of files.
-    count = 2
+    count = 10
     while count>=0:
         # Scroll down to the bottom of the page
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
